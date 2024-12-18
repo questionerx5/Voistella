@@ -172,11 +172,10 @@ public class Creature extends Entity{
     public Level lastNonNullLevel(){
         return lastNonNullLevel;
     }
-    private int visionRadius;
+    private double visionRadius;
     private double[][] visible;
     private boolean visibleDirty;
     public boolean canSee(int x, int y){
-        //TODO: is radius different from AttackTargetScreen's calculations?
         return DEBUG_ALL_SEEING || Radius.CIRCLE.radius(pos.x, pos.y, x, y) <= visionRadius && getVisible()[x][y] > 0.0;
     }
     public double[][] getVisible(){
@@ -238,6 +237,7 @@ public class Creature extends Entity{
         }
         if(memory.tracksEntities()){
             // Add new entities, and update the position of any already existing.
+            //TODO: Fails to work sometimes? (probably when enemy is not moving and you step in range and then don't move)
             for(Entity entity : lastNonNullLevel.entities()){
                 memAddEntity(entity);
             }
@@ -251,7 +251,7 @@ public class Creature extends Entity{
                 }
             }
             for(Entity entity : toRemove){
-                memory.removeEntity(level, entity);
+                memory.removeEntity(lastNonNullLevel, entity);
             }
         }
     }

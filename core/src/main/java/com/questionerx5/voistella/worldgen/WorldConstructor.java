@@ -58,7 +58,7 @@ public class WorldConstructor{
             .placeEntitiesNonBlocking(ActorFactory.item("junk"), 50)
             .placeEntities(ActorFactory.creature("bat"), 20)
             .placeEntities(ActorFactory.creature("rogue"), 5)
-            .placeEntities(ActorFactory.creature("stealer"), 25)
+            .placeEntities(ActorFactory.creature("stealer"), 25) //TODO: Determine source of lag with large numbers of entities
             .placeEntities(ActorFactory.creatureNewInstance("goblin").setEquipment(ActorFactory.item("bow")), 5)
             .randomStairs()
         );

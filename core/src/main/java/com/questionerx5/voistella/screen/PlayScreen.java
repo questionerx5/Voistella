@@ -140,9 +140,9 @@ public class PlayScreen implements Screen{
         }
         
         //debug to make sure glyphs match up with player's memories of entities
-        for(OrderedMap.Entry<Entity, Coord> glyph : player.memEntities().entrySet()){
+        /*for(OrderedMap.Entry<Entity, Coord> glyph : player.memEntities().entrySet()){
             display.put(glyph.getValue().x, glyph.getValue().y, SColor.SAFETY_ORANGE);
-        }
+        }*/
 
         for(String message : messagesRaw){
             GDXMarkup.instance.colorString(message).wrap(GRID_WIDTH - 2, messages);
