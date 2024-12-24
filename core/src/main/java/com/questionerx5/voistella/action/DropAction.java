@@ -22,8 +22,7 @@ public class DropAction extends Action{
             if(!actorCreature.inventory().remove(item)){
                 return new ActionResult(false);
             }
-            item.setLevel(actorCreature.level());
-            item.setPos(actorCreature.pos());
+            item.setLevel(actorCreature.level(), actorCreature.pos());
             actorCreature.emitMessage("@Name drop$ ~.", true, item.articleName(false));
             actorCreature.displayEvent(new DisplayEvent(item, actorCreature.pos(), item.pos(), EventType.DROPPED));
             return new ActionResult(true);

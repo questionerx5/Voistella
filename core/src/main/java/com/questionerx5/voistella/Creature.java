@@ -59,19 +59,17 @@ public class Creature extends Entity{
                 if(item == null){
                     continue;
                 }
-                item.setLevel(level);
-                item.setPos(pos);
+                item.setLevel(level, pos);
                 inventory.remove(i);
                 displayEvent(new DisplayEvent(item, pos, item.pos(), EventType.DROPPED));
             }
             for(Item item : equipped.values()){
-                item.setLevel(level);
-                item.setPos(pos);
+                item.setLevel(level, pos);
                 displayEvent(new DisplayEvent(item, pos, item.pos(), EventType.DROPPED));
             }
             equipped.clear();
             displayEvent(new DisplayEvent(this, pos, null, EventType.DIE));
-            setLevel(null);
+            setLevel(null, pos);
         }
     }
     public void modifyHealth(int amount, String deathMessage){
@@ -174,6 +172,7 @@ public class Creature extends Entity{
     }
     private double visionRadius;
     private double[][] visible;
+    // If true, this creature needs to update what's visible.
     private boolean visibleDirty;
     public boolean canSee(int x, int y){
         return DEBUG_ALL_SEEING || Radius.CIRCLE.radius(pos.x, pos.y, x, y) <= visionRadius && getVisible()[x][y] > 0.0;
@@ -190,7 +189,7 @@ public class Creature extends Entity{
                 }
             }
             else{
-                try {
+                try { //TODO: this is being called with pos=-1, -1 occasionally?
                     FOV.reuseFOVSymmetrical(lastNonNullLevel.sightResistances(), visible, pos.x, pos.y, visionRadius, Radius.CIRCLE);       
                 } catch (ArrayIndexOutOfBoundsException aioobe) {
                     System.out.println(pos);
@@ -236,8 +235,7 @@ public class Creature extends Entity{
             }
         }
         if(memory.tracksEntities()){
-            // Add new entities, and update the position of any already existing.
-            //TODO: Fails to work sometimes? (probably when enemy is not moving and you step in range and then don't move)
+            // Add new entities. Also unintentionally update the position of any already existing.
             for(Entity entity : lastNonNullLevel.entities()){
                 memAddEntity(entity);
             }
@@ -337,7 +335,7 @@ public class Creature extends Entity{
         addLinkedActor(skill);
     }
 
-    public Creature(Level level, char glyph, Color color, String name, int maxHealth, int attack, double speed, Memory memory){
+    public Creature(Level level, Coord pos, char glyph, Color color, String name, int maxHealth, int attack, double speed, Memory memory){
         this.glyph = glyph;
         this.color = color;
         this.name = name;
@@ -362,13 +360,17 @@ public class Creature extends Entity{
         this.skills = new ArrayList<>();
         this.dijkstraMap = new DijkstraMap(RNGVars.aiRNG);
         this.dijkstraMap.measurement = Measurement.EUCLIDEAN;
-        setLevel(level);
+        setLevel(level, pos);
     }
 
     @Override
     public void setPos(Coord pos){
         setVisibleDirty();
         this.pos = pos;
+        if(level == null){
+            return;
+        }
+        updateCreatureSights();
         Feature feature = level.featureAt(pos);
         if(feature != null && feature.winComponent != null){
             emitMessage("@Name win$.", true);
@@ -376,7 +378,7 @@ public class Creature extends Entity{
         }
     }
     @Override
-    public void setLevel(Level level){
+    public void setLevel(Level level, Coord pos){
         setVisibleDirty();
         if(this.level != null){
             this.level.removeCreature(this);
@@ -385,6 +387,7 @@ public class Creature extends Entity{
             }
         }
         this.level = level;
+        setPos(pos);
         if(level != null){
             lastNonNullLevel = level;
             level.addCreature(this);

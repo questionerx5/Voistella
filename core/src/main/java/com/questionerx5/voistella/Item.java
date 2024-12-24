@@ -12,8 +12,7 @@ public class Item extends Entity{
     public PotionComponent potionComponent;
 
     public Item(Level level, Coord pos, char glyph, Color color, String name){
-        this.level = level;
-        this.pos = pos;
+        setLevel(level, pos);
         this.glyph = glyph;
         this.color = color;
         this.name = name;
@@ -25,11 +24,12 @@ public class Item extends Entity{
     }
 
     @Override
-    public void setLevel(Level level){
+    public void setLevel(Level level, Coord pos){
         if(this.level != null){
             this.level.removeItem(this);
         }
         this.level = level;
+        setPos(pos);
         if(level != null){
             level.addItem(this);
         } 

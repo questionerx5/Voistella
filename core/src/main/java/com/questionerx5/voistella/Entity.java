@@ -13,6 +13,16 @@ public abstract class Entity extends Actor{
     }
     public void setPos(Coord pos){
         this.pos = pos;
+        if(level == null){
+            return;
+        }
+        updateCreatureSights();
+    }
+    protected void updateCreatureSights(){
+        // Update sights of all creatures.
+        for(Creature creature : level.creatures()){
+            creature.memAddEntity(this);
+        }
     }
 
     protected char glyph;
@@ -52,11 +62,12 @@ public abstract class Entity extends Actor{
         return level != null;
     }
     // Should be overridden to use something more specific than level.add/level.remove.
-    public void setLevel(Level level){
+    public void setLevel(Level level, Coord pos){
         if(this.level != null){
             this.level.remove(this);
         }
         this.level = level;
+        setPos(pos); //TODO: is this the correct spot?
         if(level != null){
             level.add(this);
         } 

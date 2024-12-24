@@ -38,7 +38,8 @@ public interface ActionSupplier<T extends Actor>{
             List<Coord> candidates = new ArrayList<>();
             if(c.tracksEntities()){
                 // Check memories.
-                //nondeterministic?
+                //TODO: nondeterministic?
+                //TODO: maybe should target last known position instead
                 c.getVisible();
                 for(Map.Entry<Entity, Coord> entity : c.memEntities().entrySet()){
                     if(!(entity.getKey() instanceof Creature)){

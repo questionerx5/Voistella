@@ -33,11 +33,12 @@ public class MoveAction extends Action{
                 return new ActionResult(new AttackAction(c));
             }
             actorEntity.displayEvent(new DisplayEvent(actorEntity, actorEntity.pos(), targetPos, EventType.MOVE));
-            // Update creatures' memories in case the entity is going out of sight.
+            // Update creatures' memories if entity is going out of sight.
             for(Creature creature : actorEntity.level().creatures()){
                 if(creature != actorEntity
                 && creature.tracksEntities()
-                && creature.canSee(actorEntity.pos().x, actorEntity.pos().y)){
+                && creature.canSee(actorEntity.pos().x, actorEntity.pos().y)
+                && !creature.canSee(targetPos.x, targetPos.y)){
                     creature.memAddEntity(actorEntity, targetPos);
                 }
             }

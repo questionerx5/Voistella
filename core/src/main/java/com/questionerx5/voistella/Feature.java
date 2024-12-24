@@ -32,8 +32,7 @@ public class Feature extends Entity{
     }*/
 
     public Feature(Level level, Coord pos, char glyph, Color color, String name){
-        this.level = level;
-        this.pos = pos;
+        setLevel(level, pos);
         this.glyph = glyph;
         this.color = color;
         this.name = name;
@@ -45,11 +44,12 @@ public class Feature extends Entity{
     }
 
     @Override
-    public void setLevel(Level level){
+    public void setLevel(Level level, Coord pos){
         if(this.level != null){
             this.level.removeFeature(this);
         }
         this.level = level;
+        setPos(pos);
         if(level != null){
             level.addFeature(this);
         } 

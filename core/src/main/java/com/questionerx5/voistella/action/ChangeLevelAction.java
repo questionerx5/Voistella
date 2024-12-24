@@ -28,8 +28,7 @@ public class ChangeLevelAction extends Action{
             actorEntity.emitMessage("@Name leave$ ~.", true, actorEntity.level().name());
             actorEntity.displayEvent(new DisplayEvent(actorEntity, actorEntity.pos(), destination, EventType.LEAVE_LEVEL));
             // Add entity to destination level.
-            actorEntity.setLevel(level);
-            actorEntity.setPos(destination);
+            actorEntity.setLevel(level, destination);
             actorEntity.emitMessage("@Name enter$ ~.", false, actorEntity.level().name());
             actorEntity.displayEvent(new DisplayEvent(actorEntity, actorEntity.pos(), destination, EventType.ENTER_LEVEL));
             return new ActionResult(true);

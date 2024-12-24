@@ -38,9 +38,6 @@ public class ItemData extends EntityData<Item>{
         Item item = new Item(level, pos, this.glyph, this.color, this.name);
         item.equippableComponent = equippableComponent;
         item.potionComponent = potionComponent;
-        if(level != null){
-            level.addItem(item);
-        }
         return item;
     }
 }

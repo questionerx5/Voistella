@@ -48,14 +48,11 @@ public class Level{
     private void addEntity(Entity entity){
         addActor(entity);
         entities.add(entity);
-        // Update sights of all creatures.
-        for(Creature creature : creatures){
-            creature.setVisibleDirty();
-        }
     }
     private void removeEntity(Entity entity){
         removeActor(entity);
         entities.remove(entity);
+        //TODO: this would be better if it just updated the one entity
         for(Creature creature : creatures){
             creature.setVisibleDirty();
         }

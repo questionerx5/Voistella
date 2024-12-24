@@ -37,7 +37,7 @@ public class Inventory{
             return;
         }
         items[nextEmpty] = item;
-        item.setLevel(null);
+        item.setLevel(null, null);
         nextEmpty = -1;
     }
     public void remove(int i){

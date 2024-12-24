@@ -73,7 +73,7 @@ public class CreatureData extends EntityData<Creature>{
     }
 
     public Creature create(Level level, Coord pos){
-        Creature creature = new Creature(level, this.glyph, this.color, this.name, this.maxHp, this.attack, this.speed, (isPlayer ? new PlayerMemory() : new EnemyMemory(rememberEntities)));
+        Creature creature = new Creature(level, pos, this.glyph, this.color, this.name, this.maxHp, this.attack, this.speed, (isPlayer ? new PlayerMemory() : new EnemyMemory(rememberEntities)));
         if(this.isPlayer){
             creature.setAI(ActionSupplier.BLANK);
             creature.setMessages(messages);
@@ -82,7 +82,6 @@ public class CreatureData extends EntityData<Creature>{
         else{
             creature.setAI(this.ai);
         }
-        creature.setPos(pos);
         if(this.isAlly){
             creature.setAlly(true);
         }
