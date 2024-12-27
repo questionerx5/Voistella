@@ -2,7 +2,6 @@ package com.questionerx5.voistella;
 
 import com.questionerx5.voistella.action.*;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.ArrayList;
 
@@ -38,16 +37,15 @@ public interface ActionSupplier<T extends Actor>{
             List<Coord> candidates = new ArrayList<>();
             if(c.tracksEntities()){
                 // Check memories.
-                //TODO: nondeterministic?
+                // Iterate in level creature order to ensure determinism.
                 //TODO: maybe should target last known position instead
                 c.getVisible();
-                for(Map.Entry<Entity, Coord> entity : c.memEntities().entrySet()){
-                    if(!(entity.getKey() instanceof Creature)){
+                for(Creature creature : c.level().creatures()){
+                    if(!c.memEntities().containsKey(creature)){
                         continue;
                     }
-                    Creature creature = (Creature) entity.getKey();
                     if(c.isAlly() != creature.isAlly()){
-                        candidates.add(entity.getValue());
+                        candidates.add(c.memEntities().get(creature));
                     }
                 }
             }

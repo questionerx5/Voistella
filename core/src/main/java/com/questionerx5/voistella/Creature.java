@@ -40,7 +40,13 @@ public class Creature extends Entity{
 
     private Stat maxHealth;
     public int maxHealth(){
-        return maxHealth.getValue();
+        return maxHealth.getValueAsInt();
+    }
+    public void addMaxHealthModifier(StatMod modifier){
+        maxHealth.addModifier(modifier);
+    }
+    public void removeMaxHealthModifier(StatMod modifier){
+        maxHealth.addModifier(modifier);
     }
     private int health;
     public int health(){
@@ -79,7 +85,13 @@ public class Creature extends Entity{
 
     private Stat maxMana;
     public int maxMana(){
-        return maxMana.getValue();
+        return maxMana.getValueAsInt();
+    }
+    public void addMaxManaModifier(StatMod modifier){
+        maxMana.addModifier(modifier);
+    }
+    public void removeMaxManaModifier(StatMod modifier){
+        maxMana.addModifier(modifier);
     }
     private int mana;
     public int mana(){
@@ -96,7 +108,13 @@ public class Creature extends Entity{
     }
     private Stat maxStamina;
     public int maxStamina(){
-        return maxStamina.getValue();
+        return maxStamina.getValueAsInt();
+    }
+    public void addMaxStaminaModifier(StatMod modifier){
+        maxStamina.addModifier(modifier);
+    }
+    public void removeMaxStaminaModifier(StatMod modifier){
+        maxStamina.addModifier(modifier);
     }
     private int stamina;
     public int stamina(){
@@ -189,12 +207,7 @@ public class Creature extends Entity{
                 }
             }
             else{
-                try { //TODO: this is being called with pos=-1, -1 occasionally?
-                    FOV.reuseFOVSymmetrical(lastNonNullLevel.sightResistances(), visible, pos.x, pos.y, visionRadius, Radius.CIRCLE);       
-                } catch (ArrayIndexOutOfBoundsException aioobe) {
-                    System.out.println(pos);
-                    throw aioobe;
-                }
+                FOV.reuseFOVSymmetrical(lastNonNullLevel.sightResistances(), visible, pos.x, pos.y, visionRadius, Radius.CIRCLE);       
             }
             visibleDirty = false;
             updateRemembered();
@@ -223,6 +236,11 @@ public class Creature extends Entity{
     }
     public void memAddEntity(Entity other, Coord pos){
         memory.addEntity(other, pos);
+    }
+    public void memRemoveEntity(Entity other){
+        if(canSee(other.pos.x, other.pos.y)){
+            memory.removeEntity(other.level, other);
+        }
     }
 
     private void updateRemembered(){
@@ -340,11 +358,11 @@ public class Creature extends Entity{
         this.color = color;
         this.name = name;
         this.health = maxHealth;
-        this.maxHealth = new Stat(maxHealth);
+        this.maxHealth = new Stat(maxHealth, x -> modifyHealth(0, "Killed by max health reduction."));
         this.mana = 20;
-        this.maxMana = new Stat(20);
+        this.maxMana = new Stat(20, x -> modifyMana(0));
         this.stamina = 20;
-        this.maxStamina = new Stat(20);
+        this.maxStamina = new Stat(20, x -> modifyStamina(0));
         this.attack = new Attack(attack);
         this.speed = (int) speed;
         this.cooldown = 0;

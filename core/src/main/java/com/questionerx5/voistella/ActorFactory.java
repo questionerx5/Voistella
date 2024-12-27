@@ -32,6 +32,17 @@ public class ActorFactory{
                 .addSkill(new SkillData("heal2", 0, 0, 5,
                     ActionSupplier.APPLY_EFFECT(new Effect(ActionSupplier.HEAL(1)))
                 ))
+                .addSkill(new SkillData("-1 max hp", 0, 0, 0, //TEMPORARY
+                    ActionSupplier.APPLY_EFFECT(new Effect(e -> new com.questionerx5.voistella.action.Action(){
+                        public com.questionerx5.voistella.action.ActionResult perform(){
+                            if(e.creature() == null){
+                                return new com.questionerx5.voistella.action.ActionResult(false);
+                            }
+                            e.creature().addMaxHealthModifier(new StatMod(StatMod.ModType.FLAT_INCREASE, -1));
+                            return new com.questionerx5.voistella.action.ActionResult(true);
+                        }
+                    }))
+                ))
             );
             creatures.put("fungus",
                 new CreatureData('f', SColor.GREEN, "fungus",

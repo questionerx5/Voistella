@@ -224,23 +224,8 @@ public class PlayScreen implements Screen{
                             if(!player.canSee(event.prevPos.x, event.prevPos.y)){
                                 break;
                             }
-                            //errors sometimes... maybe it's when something comes into view as soon as it dies?
-                            try{
-                                display.removeGlyph(glyphs.get(event.entity));
-                            }
-                            catch(Exception e){
-                                System.out.println(e);
-                                player.messageError("An exception occurred!");
-                            }
-                            try{
-                                if(glyphs.remove(event.entity) == null){
-                                    throw new RuntimeException("sus");
-                                }
-                            }
-                            catch(Exception e){
-                                System.out.println(e);
-                                player.messageError("An exception occurred!");
-                            }
+                            display.removeGlyph(glyphs.get(event.entity));
+                            glyphs.remove(event.entity);
                             break;
                         case LEAVE_LEVEL:
                             if(!player.canSee(event.prevPos.x, event.prevPos.y)){
@@ -281,7 +266,7 @@ public class PlayScreen implements Screen{
         batch.end();
     }
 
-    private void refreshGlyphs(){
+    private void refreshGlyphs(){ // TODO: Make layers less arbitrary
         // Remove all glyphs.
         for(TextCellFactory.Glyph glyph : glyphs.values()){
             display.removeGlyph(glyph);

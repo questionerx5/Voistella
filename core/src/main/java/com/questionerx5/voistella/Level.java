@@ -52,9 +52,8 @@ public class Level{
     private void removeEntity(Entity entity){
         removeActor(entity);
         entities.remove(entity);
-        //TODO: this would be better if it just updated the one entity
         for(Creature creature : creatures){
-            creature.setVisibleDirty();
+            creature.memRemoveEntity(entity);
         }
     }
 

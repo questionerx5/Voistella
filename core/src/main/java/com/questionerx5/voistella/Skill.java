@@ -30,7 +30,7 @@ public class Skill extends Countdown{
             }
         }
         if("".equals(costs)){
-            costs = "(free)";
+            costs = "free";
         }
         else{
             costs = costs.substring(0, costs.length() - 1);

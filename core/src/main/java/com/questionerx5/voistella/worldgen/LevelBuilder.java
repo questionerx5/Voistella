@@ -67,10 +67,22 @@ public class LevelBuilder{
     }
 
     public LevelBuilder addStartRoom(RoomSupplier supplier){
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 25; i++){
             supplier.generate();
             Tile[][] room = supplier.room();
             if(width < room.length || height < room[0].length){
+                continue;
+            }
+            boolean anyFloors = false;
+            floorCheck: for(int x = 0; x < room.length; x++){
+                for(int y = 0; y < room[x].length; y++){
+                    if(!room[x][y].testFlag(TileFlag.BLOCKING)){
+                        anyFloors = true;
+                        break floorCheck;
+                    }
+                }
+            }
+            if(!anyFloors){
                 continue;
             }
             int xOffset = RNGVars.genRNG.between(0, width - room.length + 1);
@@ -80,7 +92,7 @@ public class LevelBuilder{
             addEntities(supplier.entities(), xOffset, yOffset);
             return this;
         }
-        throw new RuntimeException("Didn't find a small enough room that fit");
+        throw new RuntimeException("Didn't find a small enough non-empty room that fit");
     }
 
     public LevelBuilder addRooms(int numAttempts, RoomSupplier... suppliers){

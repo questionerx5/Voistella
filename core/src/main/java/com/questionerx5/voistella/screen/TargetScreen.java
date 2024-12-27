@@ -30,7 +30,7 @@ public abstract class TargetScreen implements Screen{
     private List<Coord> line;
     protected Collection<Coord> area;
 
-    protected TargetScreen(Screen superScreen, Coord point, int offX, int offY){
+    protected TargetScreen(Screen superScreen, Coord point, int offX, int offY){ //TODO: Add a caption somewhere
         this.superScreen = superScreen;
         start = point;
         end = point;
