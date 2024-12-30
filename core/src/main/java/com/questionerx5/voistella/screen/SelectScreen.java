@@ -30,6 +30,10 @@ public abstract class SelectScreen implements Screen{
     protected abstract String caption();
     public abstract Screen action(int choice);
 
+    protected SelectScreen(Screen superScreen){
+        this(superScreen, 25);
+    }
+
     protected SelectScreen(Screen superScreen, int width){
         this(superScreen, SColor.BLACK, width);
     }
@@ -60,7 +64,11 @@ public abstract class SelectScreen implements Screen{
         
         display.clear();
         display.fillBackground(bgColor);
-        display.put(1, 0, GDXMarkup.instance.colorString(caption()));
+        String caption = caption();
+        if(caption.length() > width - 1){
+            caption = caption.substring(0, width - 1 - 3) + "...";
+        }
+        display.put(1, 0, GDXMarkup.instance.colorString(caption));
 
         String[] choices = choices();
         if(choices.length > OPTIONS_PER_PAGE){
@@ -71,8 +79,12 @@ public abstract class SelectScreen implements Screen{
         }
         int y = 2;
         for(int i = 0; i + page * OPTIONS_PER_PAGE < choices.length && i < OPTIONS_PER_PAGE; i++){
-            if(choices[i + page * OPTIONS_PER_PAGE] != null){
-                display.put(1, y, GDXMarkup.instance.colorString(LETTERS.charAt(i) + " - " + choices[i + page * OPTIONS_PER_PAGE]));
+            String choice = choices[i + page * OPTIONS_PER_PAGE];
+            if(choice != null){
+                if(choice.length() > width - 5){ //TODO: Account for markup
+                    choice = choice.substring(0, width - 5 - 3) + "...";
+                }
+                display.put(1, y, GDXMarkup.instance.colorString(LETTERS.charAt(i) + " - " + choice));
                 y++;
             }
         }

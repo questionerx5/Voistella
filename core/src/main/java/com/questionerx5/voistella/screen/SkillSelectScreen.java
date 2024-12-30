@@ -7,7 +7,7 @@ public class SkillSelectScreen extends SelectScreen{
     private Creature player;
     private String[] choices;
 
-    protected SkillSelectScreen(Screen superScreen, Creature player) {
+    public SkillSelectScreen(Screen superScreen, Creature player) {
         super(superScreen, 40);
         this.player = player;
         this.choices = new String[player.skills().size()];

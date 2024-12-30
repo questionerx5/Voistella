@@ -10,7 +10,7 @@ public class ItemActionScreen extends SelectScreen{
     private boolean inWorld, equipped;
 
     public ItemActionScreen(Screen superScreen, Item item, Creature player){
-        super(superScreen, 25);
+        super(superScreen);
         this.item = item;
         this.player = player;
         this.inWorld = item.inWorld();

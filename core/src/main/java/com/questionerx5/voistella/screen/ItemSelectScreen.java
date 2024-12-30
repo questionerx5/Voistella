@@ -11,7 +11,7 @@ public class ItemSelectScreen extends SelectScreen{
     private String caption;
 
     public ItemSelectScreen(Screen superScreen, Item[] items, Creature player, String caption){
-        super(superScreen, 25);
+        super(superScreen);
         this.items = items;
         this.player = player;
         this.choices = new String[items.length];

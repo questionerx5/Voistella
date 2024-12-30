@@ -9,7 +9,7 @@ public class EntityInfoSelectScreen extends SelectScreen{
     private Entity[] entities;
     
     public EntityInfoSelectScreen(Screen superScreen, Entity[] entities){
-        super(superScreen, 30);
+        super(superScreen);
         this.entities = entities;
         choices = new String[entities.length];
         for(int i = 0; i < entities.length; i++){
