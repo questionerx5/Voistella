@@ -1,7 +1,6 @@
 package com.questionerx5.voistella;
 
 import com.questionerx5.voistella.action.Action;
-import com.questionerx5.voistella.action.ActionResult;
 import com.questionerx5.voistella.action.RedirectAction;
 import com.questionerx5.voistella.action.CountdownAction;
 
@@ -18,20 +17,13 @@ public class Effect extends Countdown{
         }
         this.creature = creature;
         if(instant){
-            Action action = getAction();
-            while(true){
-                action.bind(this);
-                ActionResult success = action.perform();
-                if(!success.success || success.alternate == null){
-                    break;
-                }
-                action = success.alternate;
-            }
+            getAction().recursivePerform(this);
         }
         else{
             creature.addLinkedActor(this);
         }
     }
+    private ActionSupplier<Effect> endActionSupplier;
     
     private boolean instant;
     public boolean instant(){
@@ -43,6 +35,12 @@ public class Effect extends Countdown{
         this.instant = false;
         this.actionSupplier = actionSupplier;
     }
+    public Effect(int duration, ActionSupplier<Effect> actionSupplier, ActionSupplier<Effect> endActionSupplier){
+        this.duration = duration;
+        this.instant = false;
+        this.actionSupplier = actionSupplier;
+        this.endActionSupplier = endActionSupplier;
+    }
     public Effect(ActionSupplier<Effect> actionSupplier){
         this.duration = 0;
         this.instant = true;
@@ -52,6 +50,7 @@ public class Effect extends Countdown{
         this.duration = other.duration;
         this.instant = other.instant;
         this.actionSupplier = other.actionSupplier;
+        this.endActionSupplier = other.endActionSupplier;
     }
 
     @Override
@@ -61,12 +60,19 @@ public class Effect extends Countdown{
 
     @Override
     public Action getAction(){
-        Action action = new RedirectAction(new CountdownAction(), actionSupplier.getAction(this));
-        return action;
+        if(actionSupplier == null){
+            return new CountdownAction();
+        }
+        else{
+            return new RedirectAction(new CountdownAction(), actionSupplier.getAction(this));
+        }
     }
 
     @Override
     protected void end(){
+        if(endActionSupplier != null){
+            endActionSupplier.getAction(this).recursivePerform(this);
+        }
         creature.removeLinkedActor(this);
     }
 }

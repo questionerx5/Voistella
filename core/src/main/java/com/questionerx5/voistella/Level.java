@@ -11,7 +11,6 @@ import java.util.ArrayDeque;
 
 import com.questionerx5.voistella.Tile.TileFlag;
 import com.questionerx5.voistella.action.Action;
-import com.questionerx5.voistella.action.ActionResult;
 
 
 public class Level{
@@ -238,21 +237,12 @@ public class Level{
             if(action == null){
                 return false;
             }
-            // Keep getting actions until success or failure.
-            while(true){
-                action.bind(nextActor);
-                ActionResult success = action.perform();
+            boolean success = action.recursivePerform(nextActor);
+            if(!success){
                 // If failure, return without advancing turns.
-                if(!success.success){
-                    return false;
-                }
-                // If no alternatives, break and advance turn.
-                if(success.alternate == null){
-                    break;
-                }
-                // Get alternative and try that.
-                action = success.alternate;
+                return false;
             }
+            // Advance turn.
             nextActor.resetCooldown();
         }
         actors.poll();

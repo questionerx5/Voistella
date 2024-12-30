@@ -2,6 +2,7 @@ package com.questionerx5.voistella.action;
 
 import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.Item;
+import com.questionerx5.voistella.Effect;
 
 public class ConsumeAction extends Action{
     private final Item item;
@@ -19,7 +20,7 @@ public class ConsumeAction extends Action{
             Creature actorCreature = (Creature) actor;
             actorCreature.inventory().remove(item);
             actorCreature.emitMessage("@Name drink$ ~.", true, item.articleName(false));
-            item.potionComponent.effect.applyTo(actorCreature);
+            new Effect(item.potionComponent.effect).applyTo(actorCreature);
             return new ActionResult(true);
         }
         return new ActionResult(false);

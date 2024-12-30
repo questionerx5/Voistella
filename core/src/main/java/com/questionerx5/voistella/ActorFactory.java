@@ -104,6 +104,10 @@ public class ActorFactory{
                 new ItemData('!', SColor.PINK, "regen potion")
                 .setPotionComponent(new PotionComponent(new Effect(20, ActionSupplier.HEAL(1))))
             );
+            items.put("delayed health potion",
+                new ItemData('!', SColor.RED_BIRCH, "delayed health potion")
+                .setPotionComponent(new PotionComponent(new Effect(10, null, ActionSupplier.HEAL(20))))
+            );
         }
     }
 

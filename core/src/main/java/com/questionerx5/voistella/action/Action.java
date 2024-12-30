@@ -12,4 +12,18 @@ public abstract class Action{
     }
 
     public abstract ActionResult perform();
+
+    // Recursively perform() on this Action and any subsequent alternates.
+    public boolean recursivePerform(Actor actor){
+        bind(actor);
+        ActionResult success = perform();
+        if(success.alternate == null){
+            // If no alternates, return whether or not this succeeded.
+            return success.success;
+        }
+        else{
+            // Perform the alternate action.
+            return success.alternate.recursivePerform(actor);
+        }
+    }
 }
