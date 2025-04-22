@@ -42,11 +42,8 @@ public class Creature extends Entity{
     public int maxHealth(){
         return maxHealth.getValueAsInt();
     }
-    public void addMaxHealthModifier(StatMod modifier){
-        maxHealth.addModifier(modifier);
-    }
-    public void removeMaxHealthModifier(StatMod modifier){
-        maxHealth.addModifier(modifier);
+    public Stat maxHealthStat(){
+        return maxHealth;
     }
     private int health;
     public int health(){
@@ -83,15 +80,17 @@ public class Creature extends Entity{
         modifyHealth(amount);
     }
 
+    private RegenTimer regenTimer;
+    public Stat regenStat(){
+        return regenTimer.speedStat();
+    }
+
     private Stat maxMana;
     public int maxMana(){
         return maxMana.getValueAsInt();
     }
-    public void addMaxManaModifier(StatMod modifier){
-        maxMana.addModifier(modifier);
-    }
-    public void removeMaxManaModifier(StatMod modifier){
-        maxMana.addModifier(modifier);
+    public Stat maxManaStat(){
+        return maxMana;
     }
     private int mana;
     public int mana(){
@@ -110,11 +109,8 @@ public class Creature extends Entity{
     public int maxStamina(){
         return maxStamina.getValueAsInt();
     }
-    public void addMaxStaminaModifier(StatMod modifier){
-        maxStamina.addModifier(modifier);
-    }
-    public void removeMaxStaminaModifier(StatMod modifier){
-        maxStamina.addModifier(modifier);
+    public Stat maxStaminaStat(){
+        return maxStamina;
     }
     private int stamina;
     public int stamina(){
@@ -135,8 +131,11 @@ public class Creature extends Entity{
         return equipped.containsKey(EquipSlot.WEAPON) ? equipped.get(EquipSlot.WEAPON).equippableComponent.attack : attack;
     }
 
-    private int speed;
+    private Stat speed;
     public int speed(){
+        return speed.getValueAsInt();
+    }
+    public Stat speedStat(){
         return speed;
     }
 
@@ -334,7 +333,6 @@ public class Creature extends Entity{
 
     // The actors that should be added/removed to levels this goes to.
     private List<Actor> linkedActors;
-    private RegenTimer regenTimer;
     public void addLinkedActor(Actor actor){
         this.linkedActors.add(actor);
         level.addActor(actor);
@@ -364,7 +362,7 @@ public class Creature extends Entity{
         this.stamina = 20;
         this.maxStamina = new Stat(20, x -> modifyStamina(0));
         this.attack = new Attack(attack);
-        this.speed = (int) speed;
+        this.speed = new Stat(speed);
         this.cooldown = 0;
         this.inventory = new Inventory(20);
         this.equipped = new EnumMap<>(EquipSlot.class);

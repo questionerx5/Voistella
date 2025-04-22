@@ -10,20 +10,21 @@ public class Effect extends Countdown{
         return creature;
     }
 
+    private ActionSupplier<Effect> startActionSupplier;
     private ActionSupplier<Effect> actionSupplier;
+    private ActionSupplier<Effect> endActionSupplier;
     public void applyTo(Creature creature){
         if(this.creature != null){
             throw new IllegalStateException("Effect can only be put on one creature!");
         }
         this.creature = creature;
-        if(instant){
-            getAction().recursivePerform(this);
-        }
-        else{
+        if(!instant){
             creature.addLinkedActor(this);
         }
+        if(startActionSupplier != null){
+            startActionSupplier.getAction(this).recursivePerform(this);
+        }
     }
-    private ActionSupplier<Effect> endActionSupplier;
     
     private boolean instant;
     public boolean instant(){
@@ -41,14 +42,22 @@ public class Effect extends Countdown{
         this.actionSupplier = actionSupplier;
         this.endActionSupplier = endActionSupplier;
     }
+    public Effect(int duration, ActionSupplier<Effect> startActionSupplier, ActionSupplier<Effect> actionSupplier, ActionSupplier<Effect> endActionSupplier){
+        this.duration = duration;
+        this.instant = false;
+        this.startActionSupplier = startActionSupplier;
+        this.actionSupplier = actionSupplier;
+        this.endActionSupplier = endActionSupplier;
+    }
     public Effect(ActionSupplier<Effect> actionSupplier){
         this.duration = 0;
         this.instant = true;
-        this.actionSupplier = actionSupplier;
+        this.startActionSupplier = actionSupplier;
     }
     public Effect(Effect other){
         this.duration = other.duration;
         this.instant = other.instant;
+        this.startActionSupplier = other.startActionSupplier;
         this.actionSupplier = other.actionSupplier;
         this.endActionSupplier = other.endActionSupplier;
     }
