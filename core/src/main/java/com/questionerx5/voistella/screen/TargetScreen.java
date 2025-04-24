@@ -30,6 +30,9 @@ public abstract class TargetScreen implements Screen{
     private List<Coord> line;
     protected Collection<Coord> area;
 
+    protected List<Coord> preferredTargets;
+    private int preferredTargetIndex;
+
     protected TargetScreen(Screen superScreen, Coord point, int offX, int offY){ //TODO: Add a caption somewhere
         this.superScreen = superScreen;
         start = point;
@@ -38,6 +41,7 @@ public abstract class TargetScreen implements Screen{
         this.offY = offY;
         line = new ArrayList<>();
         line.add(point);
+        preferredTargetIndex = -1;
 
         FloatFilter filter = new FloatFilters.IdentityFilter();
         FilterBatch batch = new FilterBatch(filter);
@@ -123,6 +127,15 @@ public abstract class TargetScreen implements Screen{
             case SquidInput.DOWN_RIGHT_ARROW: {
                 end = end.translate(1, 1);
                 updateLine();
+                break;
+            }
+            case SquidInput.TAB: {
+                if(preferredTargets != null && !preferredTargets.isEmpty()){
+                    preferredTargetIndex++;
+                    preferredTargetIndex %= preferredTargets.size();
+                    end = preferredTargets.get(preferredTargetIndex);
+                    updateLine();
+                }
                 break;
             }
             case SquidInput.ESCAPE: {

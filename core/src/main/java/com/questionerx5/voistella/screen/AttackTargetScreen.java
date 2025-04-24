@@ -8,6 +8,7 @@ import squidpony.squidmath.Coord;
 import squidpony.squidgrid.Radius;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ArrayList;
 
 public class AttackTargetScreen extends TargetScreen{
     private Creature player;
@@ -37,6 +38,16 @@ public class AttackTargetScreen extends TargetScreen{
             }
             if(point.y != 0){
                 area.add(player.pos().translate(point.x, -point.y));
+            }
+        }
+
+        preferredTargets = new ArrayList<>();
+        for(Creature c : player.level().creatures()){
+            // TODO: Use actual line calculation instead of relying on canSee.
+            if(Radius.CIRCLE.radius(player.pos(), c.pos()) <= range
+            && player.canSee(c.pos().x, c.pos().y)
+            && player.isAlly() != c.isAlly()) {
+                preferredTargets.add(c.pos());
             }
         }
     }

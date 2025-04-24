@@ -6,7 +6,7 @@ import java.util.function.Function;
 public class StatEffect extends Effect{
     public StatEffect(int duration, Function<Creature, Stat> stat, StatMod statMod){
         super(duration,
-            e -> new com.questionerx5.voistella.action.Action(){ //TODO: shoudld i really be using anonymous classes?
+            e -> new com.questionerx5.voistella.action.Action(){ //TODO: shoudl i really be using anonymous classes?
                 public com.questionerx5.voistella.action.ActionResult perform(){
                     if(e.creature() == null){
                         return new com.questionerx5.voistella.action.ActionResult(false);

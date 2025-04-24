@@ -27,6 +27,9 @@ public class LookScreen extends TargetScreen{
             player.messageError("There's nothing there.");
             return superScreen;
         }
+        if(entities.size() == 1){
+            return EntityInfoSelectScreen.entityScreen(superScreen, entities.get(0)); 
+        }
         return new EntityInfoSelectScreen(superScreen, entities.toArray(new Entity[0]));
     }
 

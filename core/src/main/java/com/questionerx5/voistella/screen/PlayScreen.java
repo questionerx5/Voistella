@@ -97,7 +97,7 @@ public class PlayScreen implements Screen{
         refreshGlyphsNextFrame = true;
     }
 
-    private void createWorld(){
+    private void createWorld(){ //TODO: Don't generate the entire world at once
         world = WorldConstructor.generate(ActorFactory.creature("player").makePlayer(messagesRaw));
         player = WorldConstructor.player();
         world.setEvents(events);

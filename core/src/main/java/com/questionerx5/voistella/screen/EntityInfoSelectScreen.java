@@ -27,6 +27,10 @@ public class EntityInfoSelectScreen extends SelectScreen{
     @Override
     public Screen action(int choice){
         Entity entity = entities[choice];
+        return entityScreen(superScreen, entity);
+    }
+
+    public static Screen entityScreen(Screen superScreen, Entity entity){
         if(entity instanceof Creature){
             return new CreatureInfoScreen((Creature) entity, superScreen);
         }
