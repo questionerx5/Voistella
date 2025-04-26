@@ -18,7 +18,7 @@ public abstract class SelectScreen implements Screen{
     private SparseLayers display;
     private Color bgColor;
 
-    private static final int OPTIONS_PER_PAGE = GRID_HEIGHT - 2;
+    private static final int OPTIONS_PER_PAGE = Math.min(GRID_HEIGHT - 2, 26);
     // First two rows are caption and line.
     private static final String LETTERS = "abcdefghijklmnopqrstuvwxyz".substring(0, OPTIONS_PER_PAGE);
     private int width;
