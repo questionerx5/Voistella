@@ -3,6 +3,7 @@ package com.questionerx5.voistella;
 import com.badlogic.gdx.graphics.Color;
 
 import com.questionerx5.voistella.DisplayEvent.EventType;
+import com.questionerx5.voistella.Tile.TileFlag;
 import com.questionerx5.voistella.action.Action;
 
 import java.util.List;
@@ -281,13 +282,11 @@ public class Creature extends Entity{
         }
         else{
             dijkstraMap.initialize(level.movementResistances(DijkstraMap.WALL, DijkstraMap.FLOOR));
-        };
+        }
     }
-    public void rescanMap(){
-        dijkstraMap.clearGoals();
-        dijkstraMap.resetMap();
 
-        dijkstraMap.initializeCost((char[][]) null); //hey squidlib devs did you know that this works?
+    public List<Coord> pathTo(Coord... destinations){
+        dijkstraMap.reset();
         Set<Coord> allies = new HashSet<>();
         for(Creature creature : level.creatures()){
             if(this.isAlly == creature.isAlly){
@@ -297,17 +296,59 @@ public class Creature extends Entity{
         for(Coord pos : allies){
             dijkstraMap.setCost(pos, MOVE_THROUGH_CREATURE_COST);
         }
-
-        dijkstraMap.setGoal(pos);
-        dijkstraMap.scan();
-    }
-
-    public List<Coord> pathTo(Coord destination){
-        List<Coord> result = dijkstraMap.findPathPreScanned(destination);
-        if(!result.isEmpty()){
-            result.remove(0);
+        List<Coord> result = dijkstraMap.findPath(1, null, null, pos, destinations);
+        for(Coord pos : allies){
+            dijkstraMap.setCost(pos, 1);
         }
         return result;
+    }
+    public List<Coord> pathTo(List<Coord> destinations){
+        return pathTo(destinations.toArray(new Coord[0]));
+    }
+    public List<Coord> pathAway(List<Coord> fears){
+        Set<Coord> creatures = new HashSet<>();
+        for(Creature creature : level.creatures()){
+            if(creature != this){
+                creatures.add(creature.pos);
+            }
+        }
+        // Find distance to fears.
+        dijkstraMap.reset();
+        dijkstraMap.setGoals(fears);
+        dijkstraMap.scan();
+        double furthest = -1;
+        List<Coord> goals = new ArrayList<>();
+        // Find nearby places to run to.
+        GreasedRegion nearby = new GreasedRegion(level.width(), level.height(), pos);
+        for(int i = 0; i < 4; i++){
+            nearby.expand8way();
+            Set<Coord> toRemove = new HashSet<>();
+            for(Coord point : nearby){
+                if(level.tile(point).testFlag(TileFlag.BLOCKING) || creatures.contains(point)){
+                    toRemove.add(point);
+                }
+            }
+            nearby.removeAll(toRemove);
+        }
+        // Determine the nearby place that is furthest from any fear.
+        for(Coord point : nearby){
+            double dist = dijkstraMap.gradientMap[point.x][point.y];
+            if(dist >= DijkstraMap.FLOOR){
+                continue;
+            }
+            if(dist > furthest){
+                goals.clear();
+                furthest = dist;
+            }
+            if(dist >= furthest){
+                goals.add(point);
+            }
+        }
+        if(goals.isEmpty()){
+            return null;
+        }
+        dijkstraMap.reset();
+        return dijkstraMap.findPath(1, creatures, null, pos, goals.toArray(new Coord[0]));
     }
 
     private List<String> messages;
@@ -376,6 +417,7 @@ public class Creature extends Entity{
         this.skills = new ArrayList<>();
         this.dijkstraMap = new DijkstraMap(RNGVars.aiRNG);
         this.dijkstraMap.measurement = Measurement.EUCLIDEAN;
+        this.dijkstraMap.setBlockingRequirement(0);
         setLevel(level, pos);
     }
 

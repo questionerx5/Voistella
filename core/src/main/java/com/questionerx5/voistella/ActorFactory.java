@@ -11,13 +11,16 @@ import java.util.HashMap;
 
 public class ActorFactory{
     private static HashMap<String, CreatureData> creatures;
-    public static CreatureData creature(String name){
+    public static CreatureData creature(String id){
         initCreatures();
-        return creatures.get(name);
+        CreatureData result = creatures.get(id);
+        if(result == null){
+            throw new RuntimeException("No creature with id " + id);
+        }
+        return result;
     }
-    public static CreatureData creatureNewInstance(String name){
-        initCreatures();
-        return new CreatureData(creatures.get(name));
+    public static CreatureData creatureNewInstance(String id){
+        return new CreatureData(creature(id));
     }
     private static void initCreatures(){
         if(creatures == null){
@@ -36,35 +39,51 @@ public class ActorFactory{
                     ActionSupplier.APPLY_EFFECT(new StatEffect(50, Creature::maxHealthStat, new StatMod(StatMod.ModType.MULT, 1.5)))
                 ))
             );
-            creatures.put("fungus",
+            creatures.put("test:fungus",
                 new CreatureData('f', SColor.GREEN, "fungus",
                 ActionSupplier.NOTHING, false,
                 5, 0, -1)
             );
-            creatures.put("bat",
+            creatures.put("test:bat",
                 new CreatureData('b', SColor.BROWN, "bat",
                 ActionSupplier.WANDER, false,
                 2, 1, 200)
             );
-            creatures.put("zombie",
+            creatures.put("test:zombie",
                 new CreatureData('Z', SColor.LIGHT_GRAY, "zombie",
                 ActionSupplier.CHASE(ActionSupplier.NOTHING), true,
                 6, 3, 50)
             );
-            creatures.put("goblin",
+            creatures.put("test:goblin",
                 new CreatureData('g', SColor.GREEN, "goblin",
                 ActionSupplier.RANGED_ATTACK(ActionSupplier.WANDER), false,
                 4, 2, 100)
             );
-            creatures.put("rogue",
+            creatures.put("test:rogue",
                 new CreatureData('@', SColor.BLUE, "rogue",
                 ActionSupplier.CHASE(ActionSupplier.WANDER), true,
-                1, 1, 100)
+                1, 1, 200)
             );
-            creatures.put("stealer",
+            creatures.put("test:stealer",
                 new CreatureData('@', SColor.BROWN, "stealer",
                 ActionSupplier.EQUIP(ActionSupplier.PICKUP(ActionSupplier.CHASE(ActionSupplier.WANDER))), true,
                 10, 0, 100)
+            );
+            creatures.put("test:scaredy cat",
+                new CreatureData('c', SColor.ORANGE, "scaredy cat",
+                ActionSupplier.HP_CHECK(1,
+                    ActionSupplier.FLEE(ActionSupplier.NOTHING),
+                    ActionSupplier.CHASE(ActionSupplier.WANDER)),
+                true,
+                3, 2, 200)
+            );
+            creatures.put("test:helper",
+                new CreatureData('@', SColor.LIGHT_BLUE, "helper",
+                ActionSupplier.HP_CHECK(0.3,
+                    ActionSupplier.FLEE(ActionSupplier.RANGED_ATTACK(ActionSupplier.NOTHING)),
+                    ActionSupplier.CHASE(ActionSupplier.WANDER)),
+                true,
+                20, 2, 100)
             );
         }
     }
