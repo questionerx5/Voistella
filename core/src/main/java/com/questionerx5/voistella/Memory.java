@@ -1,8 +1,7 @@
 package com.questionerx5.voistella;
 
-import java.util.Map;
-
-import squidpony.squidmath.Coord;
+import com.github.tommyettinger.ds.ObjectObjectMap;
+import com.github.yellowstonegames.grid.Coord;
 
 public interface Memory{
     boolean tracksTiles();
@@ -14,5 +13,5 @@ public interface Memory{
     }
     void addEntity(Entity entity, Coord pos);
     void removeEntity(Level level, Entity entity);
-    Map<Entity, Coord> getEntities(Level level);
+    ObjectObjectMap<Entity, Coord> getEntities(Level level);
 }

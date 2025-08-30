@@ -1,15 +1,13 @@
 package com.questionerx5.voistella.data;
 
-import java.util.List;
-import java.util.ArrayList;
-
+import com.badlogic.gdx.graphics.Color;
+import com.github.tommyettinger.ds.ObjectList;
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.ActionSupplier;
 import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.EnemyMemory;
 import com.questionerx5.voistella.Level;
 import com.questionerx5.voistella.PlayerMemory;
-import com.badlogic.gdx.graphics.Color;
-import squidpony.squidmath.Coord;
 
 public class CreatureData extends EntityData<Creature>{
     private ActionSupplier<? super Creature> ai;
@@ -18,8 +16,8 @@ public class CreatureData extends EntityData<Creature>{
     private double speed;
 
     private boolean isPlayer;
-    private List<String> messages;
-    public CreatureData makePlayer(List<String> messages){
+    private ObjectList<String> messages;
+    public CreatureData makePlayer(ObjectList<String> messages){
         this.isPlayer = true;
         this.messages = messages;
         return this;
@@ -38,7 +36,7 @@ public class CreatureData extends EntityData<Creature>{
         return this;
     }
 
-    private List<SkillData> skills;
+    private ObjectList<SkillData> skills;
     public CreatureData addSkill(SkillData skill){
         skills.add(skill);
         return this;
@@ -55,7 +53,7 @@ public class CreatureData extends EntityData<Creature>{
         this.attack = attack;
         this.speed = speed;
         this.isAlly = false;
-        this.skills = new ArrayList<>();
+        this.skills = new ObjectList<>();
     }
     public CreatureData(char glyph, Color color, String name, ActionSupplier<? super Creature> ai, boolean rememberEntities, int maxHp, int attack, double speed){
         this(glyph, color, name, Character.isUpperCase(name.charAt(0)), ai, rememberEntities, maxHp, attack, speed);

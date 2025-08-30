@@ -1,7 +1,7 @@
 package com.questionerx5.voistella.data;
 
-import squidpony.squidmath.Coord;
 import com.badlogic.gdx.graphics.Color;
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.Entity;
 import com.questionerx5.voistella.Level;
 

@@ -1,7 +1,7 @@
 package com.questionerx5.voistella.worldgen;
 
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.data.EntityData;
-import squidpony.squidmath.Coord;
 
 public class PlacedEntity{
     public final EntityData<?> entity;

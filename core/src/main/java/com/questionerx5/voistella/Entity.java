@@ -1,10 +1,9 @@
 package com.questionerx5.voistella;
 
 import com.badlogic.gdx.graphics.Color;
-
-import squidpony.Messaging;
-import squidpony.Messaging.NounTrait;
-import squidpony.squidmath.Coord;
+import com.github.yellowstonegames.grid.Coord;
+import com.github.yellowstonegames.text.Messaging;
+import com.github.yellowstonegames.text.Pronoun;
 
 public abstract class Entity extends Actor{
     protected Coord pos;
@@ -96,9 +95,9 @@ public abstract class Entity extends Actor{
             creature.message(Messaging.transform(
                 message,
                 canSeeActor ? this.articleName(definite) : "something",
-                creature == this ? NounTrait.SECOND_PERSON_SINGULAR : NounTrait.NO_GENDER,
+                creature == this ? Pronoun.SECOND_PERSON_SINGULAR : Pronoun.NO_GENDER,
                 canSeeTarget ? target.articleName(targetDefinite): "something",
-                creature == target ? NounTrait.SECOND_PERSON_SINGULAR : NounTrait.NO_GENDER,
+                creature == target ? Pronoun.SECOND_PERSON_SINGULAR : Pronoun.NO_GENDER,
                 extra
             ));
         }
@@ -112,11 +111,11 @@ public abstract class Entity extends Actor{
             if(creature != this && !creature.canSee(this.pos.x, this.pos.y)){
                 continue;
             }
-            //apparently there's no Messaging.transform() without a target and with an extra
+            //apparently there's no Messaging.transform() without a target and with an extra. squidsquad devs,
             String text = Messaging.transform(
                 message,
                 this.articleName(definite),
-                creature == this ? NounTrait.SECOND_PERSON_SINGULAR : NounTrait.NO_GENDER
+                creature == this ? Pronoun.SECOND_PERSON_SINGULAR : Pronoun.NO_GENDER
             );
             if(extra != null && extra.length > 0){
                 for (int i = 0; i < extra.length; i++){

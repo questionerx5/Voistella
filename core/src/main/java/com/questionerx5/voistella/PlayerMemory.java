@@ -1,8 +1,7 @@
 package com.questionerx5.voistella;
 
-import java.util.Map;
-import java.util.HashMap;
-import squidpony.squidmath.Coord;
+import com.github.tommyettinger.ds.ObjectObjectMap;
+import com.github.yellowstonegames.grid.Coord;
 
 public class PlayerMemory implements Memory{
     private static class PlayerLevelMemory{
@@ -24,24 +23,24 @@ public class PlayerMemory implements Memory{
             return false;
         }
 
-        private Map<Entity, Coord> entities;
+        private ObjectObjectMap<Entity, Coord> entities;
         public void addEntity(Entity entity, Coord pos){
             entities.put(entity, pos);
         }
         public void removeEntity(Entity entity){
             entities.remove(entity);
         }
-        public Map<Entity, Coord> getEntities(){
+        public ObjectObjectMap<Entity, Coord> getEntities(){
             return entities;
         }
 
         public PlayerLevelMemory(int width, int height){
             tiles = new Tile[width][height];
-            entities = new HashMap<>();
+            entities = new ObjectObjectMap<>();
         }
     }
 
-    private Map<Level, PlayerLevelMemory> levelMemories;
+    private ObjectObjectMap<Level, PlayerLevelMemory> levelMemories;
     private Level lastUsedLevel;
     private PlayerLevelMemory lastUsed;
     private PlayerLevelMemory levelMemory(Level level){
@@ -60,7 +59,7 @@ public class PlayerMemory implements Memory{
     }
 
     public PlayerMemory(){
-        levelMemories = new HashMap<>();
+        levelMemories = new ObjectObjectMap<>();
     }
 
     @Override
@@ -97,7 +96,7 @@ public class PlayerMemory implements Memory{
     }
 
     @Override
-    public Map<Entity, Coord> getEntities(Level level){
+    public ObjectObjectMap<Entity, Coord> getEntities(Level level){
         return levelMemory(level).getEntities();
     }
 }

@@ -15,8 +15,7 @@ public class UnequipAction extends Action{
         if(item == null){
             return new ActionResult(false);
         }
-        if(actor instanceof Creature){
-            Creature actorCreature = (Creature) actor;
+        if(actor instanceof Creature actorCreature){
             boolean success = actorCreature.unequip(item);
             return new ActionResult(success);
         }

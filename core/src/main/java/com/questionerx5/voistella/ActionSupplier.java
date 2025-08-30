@@ -1,14 +1,14 @@
+//TODO: New library is untested
 package com.questionerx5.voistella;
 
+import com.github.tommyettinger.ds.ObjectDeque;
+import com.github.tommyettinger.ds.ObjectList;
+import com.github.tommyettinger.function.ObjObjPredicate;
+import com.github.tommyettinger.function.ObjObjToObjBiFunction;
+import com.github.yellowstonegames.grid.BresenhamLine;
+import com.github.yellowstonegames.grid.Coord;
+import com.github.yellowstonegames.grid.Radius;
 import com.questionerx5.voistella.action.*;
-import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.ArrayList;
-
-import squidpony.squidgrid.Radius;
-import squidpony.squidmath.Coord;
-import squidpony.squidmath.DDALine;
 
 @FunctionalInterface
 public interface ActionSupplier<T extends Actor>{
@@ -16,8 +16,8 @@ public interface ActionSupplier<T extends Actor>{
     ActionSupplier<Actor> NOTHING = a -> new WaitAction();
     
     ActionSupplier<Creature> WANDER = c -> {
-        int x = RNGVars.aiRNG.between(-1, 2);
-        int y = RNGVars.aiRNG.between(-1, 2);
+        int x = RNGVars.aiRNG.nextInt(-1, 2);
+        int y = RNGVars.aiRNG.nextInt(-1, 2);
         if(x == 0 && y == 0){
             return new WaitAction();
         }
@@ -32,7 +32,7 @@ public interface ActionSupplier<T extends Actor>{
     };
     static ActionSupplier<Creature> CHASE(final ActionSupplier<? super Creature> defaultAction){
         return c -> {
-            List<Coord> targets = new ArrayList<>();
+            ObjectList<Coord> targets = new ObjectList<>();
             if(c.tracksEntities()){
                 // Check memories.
                 // Iterate in level creature order to ensure determinism.
@@ -55,7 +55,7 @@ public interface ActionSupplier<T extends Actor>{
                     }
                 }
             }
-            List<Coord> path = c.pathTo(targets);
+            ObjectDeque<Coord> path = c.pathTo(targets);
             if(path == null || path.isEmpty()){
                 return defaultAction.getAction(c);
             }
@@ -68,7 +68,7 @@ public interface ActionSupplier<T extends Actor>{
     }
     static ActionSupplier<Creature> FLEE(final ActionSupplier<? super Creature> defaultAction){
         return c -> {
-            List<Coord> targets = new ArrayList<>();
+            ObjectList<Coord> targets = new ObjectList<>();
             if(c.tracksEntities()){
                 // Check memories.
                 // Iterate in level creature order to ensure determinism.
@@ -91,7 +91,7 @@ public interface ActionSupplier<T extends Actor>{
                     }
                 }
             }
-            List<Coord> path = c.pathAway(targets);
+            ObjectDeque<Coord> path = c.pathAway(targets);
             //System.out.println("Path:" + path);
             if(path == null || path.isEmpty()){
                 return defaultAction.getAction(c);
@@ -105,13 +105,15 @@ public interface ActionSupplier<T extends Actor>{
     }
     static ActionSupplier<Creature> RANGED_ATTACK(final ActionSupplier<? super Creature> defaultAction){
         return c -> {
-            List<Creature> candidates = new ArrayList<>();
+            ObjectList<Creature> candidates = new ObjectList<>();
             for(Creature creature : c.level().creatures()){
                 if((c.isAlly() == creature.isAlly()) || Radius.CIRCLE.radius(c.pos(), creature.pos()) > c.attack().range){
                     continue;
                 }
                 boolean blocked = false;
-                for(Coord point : DDALine.line(c.pos(), creature.pos())){
+                //TODO: i don't trust this to match LOS
+                //BresenhamLine.reachable(null, null, null)
+                for(Coord point : BresenhamLine.line(c.pos(), creature.pos())){
                     if(creature.level().tile(point).testFlag(Tile.TileFlag.BLOCKING)){
                         blocked = true;
                         break;
@@ -121,11 +123,11 @@ public interface ActionSupplier<T extends Actor>{
                     candidates.add(creature);
                 }
             }
-            if(candidates.size() == 0){
+            if(candidates.isEmpty()){
                 return defaultAction.getAction(c);
             }
 
-            return new AttackAction(RNGVars.aiRNG.getRandomElement(candidates));
+            return new AttackAction(RNGVars.aiRNG.randomElement(candidates));
         };
     }
     static ActionSupplier<Creature> PICKUP(final ActionSupplier<? super Creature> defaultAction){
@@ -133,11 +135,11 @@ public interface ActionSupplier<T extends Actor>{
             if(c.inventory().isFull()){
                 return defaultAction.getAction(c);
             }
-            List<Item> items = c.level().itemsAt(c.pos());
+            ObjectList<Item> items = c.level().itemsAt(c.pos());
             if(items.isEmpty()){
                 return defaultAction.getAction(c);
             }
-            return new PickupAction(RNGVars.aiRNG.getRandomElement(items));
+            return new PickupAction(RNGVars.aiRNG.randomElement(items));
         };
     }
     static ActionSupplier<Creature> EQUIP(final ActionSupplier<? super Creature> defaultAction){
@@ -173,7 +175,7 @@ public interface ActionSupplier<T extends Actor>{
         };
     }
     // Returns aboveAction if (# of nearby creatures satisfying pred) >= threshold, belowAction otherwise
-    static ActionSupplier<Creature> CREATURE_CHECK(BiPredicate<Creature, Creature> pred, int threshold, final ActionSupplier<? super Creature> aboveAction, final ActionSupplier<? super Creature> belowAction){
+    static ActionSupplier<Creature> CREATURE_CHECK(ObjObjPredicate<Creature, Creature> pred, int threshold, final ActionSupplier<? super Creature> aboveAction, final ActionSupplier<? super Creature> belowAction){
         return c -> {
             int count = 0;
             for(Creature creature : c.level().creatures()){
@@ -196,7 +198,7 @@ public interface ActionSupplier<T extends Actor>{
         return e -> new HealAction(e.creature(), amount);
     }
 
-    static BiFunction<Creature, Coord, Action> APPLY_EFFECT(Effect effect){
+    static ObjObjToObjBiFunction<Creature, Coord, Action> APPLY_EFFECT(Effect effect){
         return (c, pos) -> {
             Creature target = c.level().creatureAt(pos);
             if(target == null){

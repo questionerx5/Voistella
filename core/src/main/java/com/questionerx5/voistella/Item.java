@@ -1,11 +1,10 @@
 package com.questionerx5.voistella;
 
 import com.badlogic.gdx.graphics.Color;
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.action.Action;
 import com.questionerx5.voistella.action.WaitAction;
 import com.questionerx5.voistella.component.item.*;
-
-import squidpony.squidmath.Coord;
 
 public class Item extends Entity{
     public EquippableComponent equippableComponent;

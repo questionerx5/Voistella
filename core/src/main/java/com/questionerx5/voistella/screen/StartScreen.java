@@ -1,20 +1,36 @@
 package com.questionerx5.voistella.screen;
 
-import squidpony.squidgrid.gui.gdx.SquidInput;
-import squidpony.squidgrid.gui.gdx.SColor;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.github.yellowstonegames.press.SquidInput;
+import com.questionerx5.voistella.Main;
 
-public class StartScreen extends SimpleScreen{
-    public StartScreen(){}
+public class StartScreen extends BaseScreen{
 
-    @Override
-    public void displayText(){
-        display.put(1, 1, "Voistella", SColor.WHITE);
-        display.put(1, 2, "Press Enter to start.", SColor.WHITE);
+    public StartScreen(final Main game){
+        super(game);
     }
 
     @Override
-    public Screen handleKeyPress(char key, boolean alt, boolean ctrl, boolean shift){
-        if(key == SquidInput.ENTER) {return new PlayScreen();}
-        return this;
+    public void render(float delta){
+        ScreenUtils.clear(Color.BLACK);
+
+        game.viewport.apply();
+        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+        game.batch.begin();
+
+        game.fillRect(0, 0, Main.COLUMNS, Main.ROWS, Color.DARK_GRAY);
+        game.drawText(1, 1, "Voistella");
+        game.drawText(1, 2, "Press Enter to start.");
+
+		game.batch.end();
+    }
+
+    @Override
+    public BaseScreen handle(char key, boolean alt, boolean ctrl, boolean shift){
+        if(key == SquidInput.ENTER){
+            return new PlayScreen(game);
+        }
+        return null;
     }
 }

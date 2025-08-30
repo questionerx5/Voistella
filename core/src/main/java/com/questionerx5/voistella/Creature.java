@@ -1,25 +1,25 @@
+//TODO: New library is untested
 package com.questionerx5.voistella;
 
-import com.badlogic.gdx.graphics.Color;
+import java.util.Arrays;
+import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.github.tommyettinger.ds.EnumMap;
+import com.github.tommyettinger.ds.ObjectDeque;
+import com.github.tommyettinger.ds.ObjectList;
+import com.github.tommyettinger.ds.ObjectObjectMap;
+import com.github.tommyettinger.ds.ObjectSet;
+import com.github.yellowstonegames.grid.Coord;
+import com.github.yellowstonegames.grid.FOV;
+import com.github.yellowstonegames.grid.Measurement;
+import com.github.yellowstonegames.grid.Radius;
+import com.github.yellowstonegames.grid.Region;
+import com.github.yellowstonegames.path.DijkstraMap;
 import com.questionerx5.voistella.DisplayEvent.EventType;
 import com.questionerx5.voistella.Tile.TileFlag;
 import com.questionerx5.voistella.action.Action;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Set;
-import java.util.HashSet;
-
-import squidpony.squidgrid.Radius;
-import squidpony.squidgrid.FOV;
-import squidpony.squidgrid.Measurement;
-import squidpony.squidmath.Coord;
-import squidpony.squidmath.GreasedRegion;
-import squidpony.squidai.DijkstraMap;
+import com.github.yellowstonegames.grid.CoordSet;
 
 public class Creature extends Entity{
     private static final boolean DEBUG_ALL_SEEING = false;
@@ -145,8 +145,8 @@ public class Creature extends Entity{
         return inventory;
     }
 
-    private EnumMap<EquipSlot, Item> equipped;
-    public EnumMap<EquipSlot, Item> equippedItems(){
+    private EnumMap<Item> equipped;
+    public EnumMap<Item> equippedItems(){
         return equipped;
     }
     public boolean equip(Item item){
@@ -188,22 +188,22 @@ public class Creature extends Entity{
     public Level lastNonNullLevel(){
         return lastNonNullLevel;
     }
-    private double visionRadius;
-    private double[][] visible;
+    private float visionRadius;
+    private float[][] visible;
     // If true, this creature needs to update what's visible.
     private boolean visibleDirty;
     public boolean canSee(int x, int y){
-        return DEBUG_ALL_SEEING || Radius.CIRCLE.radius(pos.x, pos.y, x, y) <= visionRadius && getVisible()[x][y] > 0.0;
+        return DEBUG_ALL_SEEING || Radius.CIRCLE.radius(pos.x, pos.y, x, y) <= visionRadius && getVisible()[x][y] > 0;
     }
-    public double[][] getVisible(){
+    public float[][] getVisible(){
         if(visibleDirty){
             // Regenerate visibility map.
             if(visible == null || visible.length != lastNonNullLevel.width() || visible[0].length != lastNonNullLevel.height()){
-                visible = new double[lastNonNullLevel.width()][lastNonNullLevel.height()];
+                visible = new float[lastNonNullLevel.width()][lastNonNullLevel.height()];
             }
             if(DEBUG_ALL_SEEING){
                 for(int i = 0; i < visible.length; i++){
-                    Arrays.fill(visible[i], 1.0);
+                    Arrays.fill(visible[i], 1);
                 }
             }
             else{
@@ -223,7 +223,7 @@ public class Creature extends Entity{
     public Tile memTileAt(int x, int y){
         return memory.tileAt(lastNonNullLevel, x, y);
     }
-    public Map<Entity, Coord> memEntities(){
+    public ObjectObjectMap<Entity, Coord> memEntities(){
         return memory.getEntities(lastNonNullLevel);
     }
     public boolean tracksEntities(){
@@ -243,10 +243,11 @@ public class Creature extends Entity{
         }
     }
 
+    //TODO: don't create object every time?
     private void updateRemembered(){
         // Update tiles.
         if(memory.tracksTiles()){
-            for(Coord point : new GreasedRegion(getVisible(), 0.0).not()){
+            for(Coord point : new Region(getVisible(), 0).not()){
                 if(memory.setTile(lastNonNullLevel, point.x, point.y, lastNonNullLevel.tile(point))){
                     //initMap();
                 }
@@ -258,7 +259,7 @@ public class Creature extends Entity{
                 memAddEntity(entity);
             }
             // Remove entities that aren't where they were remembered to be.
-            Set<Entity> toRemove = new HashSet<>();
+            ObjectSet<Entity> toRemove = new ObjectSet<>();
             for(Map.Entry<Entity, Coord> entity : memEntities().entrySet()){
                 if(canSee(entity.getValue().x, entity.getValue().y) &&
                     !(entity.getKey().level() == lastNonNullLevel && canSee(entity.getKey().pos().x, entity.getKey().pos().y))
@@ -285,9 +286,9 @@ public class Creature extends Entity{
         }
     }
 
-    public List<Coord> pathTo(Coord... destinations){
+    public ObjectDeque<Coord> pathTo(Coord... destinations){
         dijkstraMap.reset();
-        Set<Coord> allies = new HashSet<>();
+        CoordSet allies = new CoordSet();
         for(Creature creature : level.creatures()){
             if(this.isAlly == creature.isAlly){
                 allies.add(creature.pos);
@@ -296,17 +297,17 @@ public class Creature extends Entity{
         for(Coord pos : allies){
             dijkstraMap.setCost(pos, MOVE_THROUGH_CREATURE_COST);
         }
-        List<Coord> result = dijkstraMap.findPath(1, null, null, pos, destinations);
+        ObjectDeque<Coord> result = dijkstraMap.findPath(1, null, null, pos, destinations);
         for(Coord pos : allies){
             dijkstraMap.setCost(pos, 1);
         }
         return result;
     }
-    public List<Coord> pathTo(List<Coord> destinations){
+    public ObjectDeque<Coord> pathTo(ObjectList<Coord> destinations){
         return pathTo(destinations.toArray(new Coord[0]));
     }
-    public List<Coord> pathAway(List<Coord> fears){
-        Set<Coord> creatures = new HashSet<>();
+    public ObjectDeque<Coord> pathAway(ObjectList<Coord> fears){
+        CoordSet creatures = new CoordSet();
         for(Creature creature : level.creatures()){
             if(creature != this){
                 creatures.add(creature.pos);
@@ -315,14 +316,15 @@ public class Creature extends Entity{
         // Find distance to fears.
         dijkstraMap.reset();
         dijkstraMap.setGoals(fears);
-        dijkstraMap.scan();
+        dijkstraMap.scan(); //TODO: Don't scan the entire level
         double furthest = -1;
-        List<Coord> goals = new ArrayList<>();
+        CoordSet goals = new CoordSet();
         // Find nearby places to run to.
-        GreasedRegion nearby = new GreasedRegion(level.width(), level.height(), pos);
+        Region nearby = new Region(pos, level.width(), level.height());
         for(int i = 0; i < 4; i++){
             nearby.expand8way();
-            Set<Coord> toRemove = new HashSet<>();
+            CoordSet toRemove = new CoordSet();
+            //TODO: use a Region for part of this?
             for(Coord point : nearby){
                 if(level.tile(point).testFlag(TileFlag.BLOCKING) || creatures.contains(point)){
                     toRemove.add(point);
@@ -351,8 +353,8 @@ public class Creature extends Entity{
         return dijkstraMap.findPath(1, creatures, null, pos, goals.toArray(new Coord[0]));
     }
 
-    private List<String> messages;
-    public void setMessages(List<String> messages){
+    private ObjectList<String> messages;
+    public void setMessages(ObjectList<String> messages){
         this.messages = messages;
     }
     public boolean receivesMessages(){
@@ -365,6 +367,7 @@ public class Creature extends Entity{
         }
         return false;
     }
+    //TODO: use [] instead of this replace stuff
     public boolean messageError(String message){
         return message("[#FF8080]" + message.replace("[WHITE]", "[#FF8080]") + "[WHITE]");
     }
@@ -373,7 +376,7 @@ public class Creature extends Entity{
     }
 
     // The actors that should be added/removed to levels this goes to.
-    private List<Actor> linkedActors;
+    private ObjectList<Actor> linkedActors;
     public void addLinkedActor(Actor actor){
         this.linkedActors.add(actor);
         level.addActor(actor);
@@ -383,8 +386,8 @@ public class Creature extends Entity{
         level.removeActor(actor);
     }
 
-    private List<Skill> skills;
-    public List<Skill> skills(){
+    private ObjectList<Skill> skills;
+    public ObjectList<Skill> skills(){
         return skills;
     }
     public void addSkill(Skill skill){
@@ -411,11 +414,11 @@ public class Creature extends Entity{
         this.messages = null;
         this.visionRadius = 10;
         this.visibleDirty = true;
-        this.linkedActors = new ArrayList<>();
+        this.linkedActors = new ObjectList<>();
         this.regenTimer = new RegenTimer(10, this);
         this.linkedActors.add(regenTimer);
-        this.skills = new ArrayList<>();
-        this.dijkstraMap = new DijkstraMap(RNGVars.aiRNG);
+        this.skills = new ObjectList<>();
+        this.dijkstraMap = new DijkstraMap();
         this.dijkstraMap.measurement = Measurement.EUCLIDEAN;
         this.dijkstraMap.setBlockingRequirement(0);
         setLevel(level, pos);

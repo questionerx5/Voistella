@@ -1,8 +1,7 @@
 package com.questionerx5.voistella;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.function.Consumer;
+import com.github.tommyettinger.ds.ObjectBag;
+import com.github.tommyettinger.function.ObjConsumer;
 
 public class Stat{
     private double base;
@@ -10,9 +9,9 @@ public class Stat{
         base += change;
         changeStats();
     }
-    private List<StatMod> flatIncreases;
-    private List<StatMod> multIncreases;
-    private List<StatMod> mults;
+    private ObjectBag<StatMod> flatIncreases;
+    private ObjectBag<StatMod> multIncreases;
+    private ObjectBag<StatMod> mults;
     public void addModifier(StatMod modifier){
         switch(modifier.type()){
             case FLAT_INCREASE: flatIncreases.add(modifier); break;
@@ -32,7 +31,7 @@ public class Stat{
 
     private boolean calculated;
     private double calculatedValue;
-    private Consumer<Void> onChange;
+    private ObjConsumer<Void> onChange;
     private void changeStats(){
         calculated = false;
         if(onChange != null){
@@ -43,11 +42,11 @@ public class Stat{
     public Stat(double base){
         this(base, null);
     }
-    public Stat(double base, Consumer<Void> onChange){
+    public Stat(double base, ObjConsumer<Void> onChange){
         this.base = base;
-        flatIncreases = new ArrayList<>();
-        multIncreases = new ArrayList<>();
-        mults = new ArrayList<>();
+        flatIncreases = new ObjectBag<>();
+        multIncreases = new ObjectBag<>();
+        mults = new ObjectBag<>();
         this.onChange = onChange; 
     }
 

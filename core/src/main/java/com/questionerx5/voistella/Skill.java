@@ -1,17 +1,18 @@
 package com.questionerx5.voistella;
 
+import com.github.tommyettinger.function.ObjObjToObjBiFunction;
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.action.Action;
 import com.questionerx5.voistella.action.CountdownAction;
 import com.questionerx5.voistella.action.WaitAction;
-
-import squidpony.squidmath.Coord;
-import java.util.function.BiFunction;
 
 public class Skill extends Countdown{
     private String name;
     public String name(){
         return name;
     }
+    //TODO: don't create object every time?
+    //TODO: StringBuilder?
     public String costs(Creature creature){
         String costs = "";
         if(manaCost != 0){
@@ -29,7 +30,7 @@ public class Skill extends Countdown{
 
             }
         }
-        if("".equals(costs)){
+        if(manaCost != 0 && staminaCost != 0 && cooldown == 0){
             costs = "free";
         }
         else{
@@ -57,12 +58,12 @@ public class Skill extends Countdown{
         return reason.trim();
     }
 
-    private BiFunction<Creature, Coord, Action> action;
+    private ObjObjToObjBiFunction<Creature, Coord, Action> action;
     public Action castAction(Creature caster, Coord destination){
         return action.apply(caster, destination);
     }
 
-    public Skill(String name, int manaCost, int staminaCost, int cooldown, BiFunction<Creature, Coord, Action> action){
+    public Skill(String name, int manaCost, int staminaCost, int cooldown, ObjObjToObjBiFunction<Creature, Coord, Action> action){
         this.name = name;
         this.manaCost = manaCost;
         this.staminaCost = staminaCost;

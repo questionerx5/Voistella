@@ -1,8 +1,8 @@
 package com.questionerx5.voistella.action;
 
 import com.questionerx5.voistella.Creature;
-import com.questionerx5.voistella.Item;
 import com.questionerx5.voistella.Effect;
+import com.questionerx5.voistella.Item;
 
 public class ConsumeAction extends Action{
     private final Item item;
@@ -16,8 +16,7 @@ public class ConsumeAction extends Action{
         if(item == null || item.potionComponent == null){
             return new ActionResult(false);
         }
-        if(actor instanceof Creature){
-            Creature actorCreature = (Creature) actor;
+        if(actor instanceof Creature actorCreature){
             actorCreature.inventory().remove(item);
             actorCreature.emitMessage("@Name drink$ ~.", true, item.articleName(false));
             new Effect(item.potionComponent.effect).applyTo(actorCreature);

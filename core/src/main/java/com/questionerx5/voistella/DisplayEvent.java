@@ -1,6 +1,6 @@
 package com.questionerx5.voistella;
 
-import squidpony.squidmath.Coord;
+import com.github.yellowstonegames.grid.Coord;
 
 public class DisplayEvent{
     public final Entity entity;

@@ -1,6 +1,6 @@
 package com.questionerx5.voistella;
 
-import java.util.List;
+import com.github.tommyettinger.ds.ObjectList;
 
 public class World{
     private Level[] levels;
@@ -18,7 +18,7 @@ public class World{
         }
     }
 
-    public void setEvents(List<DisplayEvent> events){
+    public void setEvents(ObjectList<DisplayEvent> events){
         for(Level level : levels){
             level.setEvents(events);
         }

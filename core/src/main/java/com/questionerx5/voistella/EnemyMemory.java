@@ -1,15 +1,13 @@
 package com.questionerx5.voistella;
 
-import java.util.Map;
-import java.util.HashMap;
-
-import squidpony.squidmath.Coord;
+import com.github.tommyettinger.ds.ObjectObjectMap;
+import com.github.yellowstonegames.grid.Coord;
 
 public class EnemyMemory implements Memory{
-    private Map<Level, Map<Entity, Coord>> entities;
-    private Map<Entity, Coord> entitiesOnLevel(Level level){
+    private ObjectObjectMap<Level, ObjectObjectMap<Entity, Coord>> entities;
+    private ObjectObjectMap<Entity, Coord> entitiesOnLevel(Level level){
         if(!entities.containsKey(level)){
-            entities.put(level, new HashMap<>());
+            entities.put(level, new ObjectObjectMap<>());
         }
         return entities.get(level);
     }
@@ -18,7 +16,7 @@ public class EnemyMemory implements Memory{
 
     public EnemyMemory(boolean rememberEntities){
         this.rememberEntities = rememberEntities;
-        entities = new HashMap<>();
+        entities = new ObjectObjectMap<>();
     }
 
     @Override
@@ -44,7 +42,7 @@ public class EnemyMemory implements Memory{
         if(!rememberEntities){
             return;
         }
-        for(Map<Entity, Coord> level : entities.values()){
+        for(ObjectObjectMap<Entity, Coord> level : entities.values()){
             level.remove(entity);
         }
         entitiesOnLevel(entity.level()).put(entity, pos);
@@ -59,11 +57,11 @@ public class EnemyMemory implements Memory{
     }
 
     @Override
-    public Map<Entity, Coord> getEntities(Level level){
+    public ObjectObjectMap<Entity, Coord> getEntities(Level level){
         if(rememberEntities){
             return entitiesOnLevel(level);
         }
-        Map<Entity, Coord> result = new HashMap<>();
+        ObjectObjectMap<Entity, Coord> result = new ObjectObjectMap<>();
         for(Entity entity : level.entities()){
             result.put(entity, entity.pos());
         }

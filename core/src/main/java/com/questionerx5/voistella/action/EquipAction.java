@@ -15,8 +15,7 @@ public class EquipAction extends Action{
         if(item == null){
             return new ActionResult(false);
         }
-        if(actor instanceof Creature){
-            Creature actorCreature = (Creature) actor;
+        if(actor instanceof Creature actorCreature){
             boolean success = actorCreature.equip(item);
             if(success){
                 actorCreature.emitMessage("@Name equip$ ~.", true, item.articleName(false));

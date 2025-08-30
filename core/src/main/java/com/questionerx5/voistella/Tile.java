@@ -1,21 +1,19 @@
 package com.questionerx5.voistella;
 
 import com.badlogic.gdx.graphics.Color;
-
-import squidpony.squidgrid.gui.gdx.SColor;
-import java.util.EnumSet;
-import squidpony.squidmath.GreasedRegion;
+import com.github.tommyettinger.ds.EnumSet;
+import com.github.yellowstonegames.grid.Region;
 
 public enum Tile{
     // Normal tiles.
-    FLOOR('.', SColor.GRAY, new SColor(32, 32, 32), TileFlag.UNREPLACEABLE),
-    WALL('#', SColor.GRAY, SColor.DARK_GRAY, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS, TileFlag.BECOMES_ENTRANCE),
+    FLOOR('.', Color.GRAY, new Color(0.125f, 0.125f, 0.125f, 1f), TileFlag.UNREPLACEABLE),
+    WALL('#', Color.GRAY, Color.DARK_GRAY, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS, TileFlag.BECOMES_ENTRANCE),
     
     // Tiles used for level generation.
-    BLANK(' ', SColor.BLACK, SColor.DARK_GRAY, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS, TileFlag.BLANK),
+    BLANK(' ', Color.BLACK, Color.DARK_GRAY, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS, TileFlag.BLANK),
 
     // Out of bounds.
-    BOUNDS('X', SColor.RED, TileFlag.BLOCKING);
+    BOUNDS('X', Color.RED, TileFlag.BLOCKING);
     
     private char glyph;
     public char glyph(){
@@ -38,7 +36,7 @@ public enum Tile{
         BLANK
     }
 
-    private EnumSet<TileFlag> flags;
+    private EnumSet flags;
     public boolean testFlag(TileFlag flag){
         return flags.contains(flag);
     }
@@ -53,10 +51,10 @@ public enum Tile{
     }
     
     Tile(char glyph, float fg, TileFlag... flags){
-        this(glyph, fg, SColor.FLOAT_BLACK, flags);
+        this(glyph, fg, Color.BLACK.toFloatBits(), flags);
     }
     Tile(char glyph, Color fg, TileFlag... flags){
-        this(glyph, fg.toFloatBits(), SColor.FLOAT_BLACK, flags);
+        this(glyph, fg.toFloatBits(), Color.BLACK.toFloatBits(), flags);
     }
     Tile(char glyph, Color fg, Color bg, TileFlag... flags){
         this(glyph, fg.toFloatBits(), bg.toFloatBits(), flags);
@@ -65,51 +63,50 @@ public enum Tile{
         this.glyph = glyph;
         this.fg = fg;
         this.bg = bg;
-        this.flags = EnumSet.noneOf(TileFlag.class);
-        for(TileFlag flag : flags){
-            this.flags.add(flag);
-        }
+        this.flags = new EnumSet(flags);
     }
 
-    public static GreasedRegion flaggedRegions(Tile[][] tiles, TileFlag flag){
+    //TODO: don't create object every time?
+    public static Region flaggedRegions(Tile[][] tiles, TileFlag flag){
         boolean[][] success = new boolean[tiles.length][tiles[0].length];
         for(int x = 0; x < tiles.length; x++){
             for(int y = 0; y < tiles[0].length; y++){
                 success[x][y] = tiles[x][y].testFlag(flag);
             }
         }
-        return new GreasedRegion(success);
+        return new Region(success);
     }
-    public static GreasedRegion unflaggedRegions(Tile[][] tiles, TileFlag flag){
+    public static Region unflaggedRegions(Tile[][] tiles, TileFlag flag){
         boolean[][] success = new boolean[tiles.length][tiles[0].length];
         for(int x = 0; x < tiles.length; x++){
             for(int y = 0; y < tiles[0].length; y++){
                 success[x][y] = !tiles[x][y].testFlag(flag);
             }
         }
-        return new GreasedRegion(success);
+        return new Region(success);
     }
-    public static GreasedRegion flaggedRegions(Tile[][] tiles, TileFlag flag, int xOffset, int yOffset){
+    // TODO: check if translate() is bugged in Region like i think it was in GreasedRegion
+    public static Region flaggedRegions(Tile[][] tiles, TileFlag flag, int xOffset, int yOffset){
         boolean[][] success = new boolean[tiles.length + xOffset][tiles[0].length + yOffset];
         for(int x = 0; x < tiles.length; x++){
             for(int y = 0; y < tiles[0].length; y++){
                 success[x + xOffset][y + yOffset] = tiles[x][y].testFlag(flag);
             }
         }
-        return new GreasedRegion(success);
+        return new Region(success);
     }
-    public static GreasedRegion unflaggedRegions(Tile[][] tiles, TileFlag flag, int xOffset, int yOffset){
+    public static Region unflaggedRegions(Tile[][] tiles, TileFlag flag, int xOffset, int yOffset){
         boolean[][] success = new boolean[tiles.length + xOffset][tiles[0].length + yOffset];
         for(int x = 0; x < tiles.length; x++){
             for(int y = 0; y < tiles[0].length; y++){
                 success[x + xOffset][y + yOffset] = !tiles[x][y].testFlag(flag);
             }
         }
-        return new GreasedRegion(success);
+        return new Region(success);
     }
 
-    public static double[][] movementResistances(Tile[][] tiles, double blocking, double nonBlocking){
-        double[][] result = new double[tiles.length][tiles[0].length];
+    public static float[][] movementResistances(Tile[][] tiles, float blocking, float nonBlocking){
+        float[][] result = new float[tiles.length][tiles[0].length];
         for(int x = 0; x < tiles.length; x++){
             for(int y = 0; y < tiles[0].length; y++){
                 result[x][y] = tiles[x][y].testFlag(TileFlag.BLOCKING) ? blocking : nonBlocking;

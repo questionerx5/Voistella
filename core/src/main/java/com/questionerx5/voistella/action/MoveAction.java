@@ -1,11 +1,11 @@
 package com.questionerx5.voistella.action;
 
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.DisplayEvent;
-import com.questionerx5.voistella.Entity;
 import com.questionerx5.voistella.DisplayEvent.EventType;
+import com.questionerx5.voistella.Entity;
 import com.questionerx5.voistella.Tile.TileFlag;
-import squidpony.squidmath.Coord;
 
 public class MoveAction extends Action{
     private final int x, y;
@@ -20,8 +20,7 @@ public class MoveAction extends Action{
         if(x == 0 && y == 0){
             return new ActionResult(new WaitAction());
         }
-        if(actor instanceof Entity){
-            Entity actorEntity = (Entity) actor;
+        if(actor instanceof Entity actorEntity){
             Coord targetPos = actorEntity.pos().translate(x, y);
             // Cancel movement into walls, etc.
             if(actorEntity.level().tile(targetPos).testFlag(TileFlag.BLOCKING)){

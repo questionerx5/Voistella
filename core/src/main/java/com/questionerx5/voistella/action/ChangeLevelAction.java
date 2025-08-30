@@ -1,11 +1,11 @@
 package com.questionerx5.voistella.action;
 
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.DisplayEvent;
-import com.questionerx5.voistella.Level;
 import com.questionerx5.voistella.DisplayEvent.EventType;
 import com.questionerx5.voistella.Entity;
-import squidpony.squidmath.Coord;
+import com.questionerx5.voistella.Level;
 
 public class ChangeLevelAction extends Action{
     private final Level level;
@@ -18,8 +18,7 @@ public class ChangeLevelAction extends Action{
 
     @Override
     public ActionResult perform(){
-        if(actor instanceof Entity){
-            Entity actorEntity = (Entity) actor;
+        if(actor instanceof Entity actorEntity){
             Creature c = level.creatureAt(destination);
             if(c != null){
                 return new ActionResult(new AttackAction(c));

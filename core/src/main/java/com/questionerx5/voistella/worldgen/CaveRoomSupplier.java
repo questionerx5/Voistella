@@ -1,18 +1,21 @@
 package com.questionerx5.voistella.worldgen;
 
+import com.github.yellowstonegames.grid.Region;
 import com.questionerx5.voistella.RNGVars;
 import com.questionerx5.voistella.Tile;
-
-import squidpony.squidmath.GreasedRegion;
 
 public class CaveRoomSupplier extends RoomSupplier{
     private final int width, height;
     private final Tile floorTile, wallTile;
 
+    // Note that the width/height of the room generated, including external, can be up to (width+2)/(height+2).
     public CaveRoomSupplier(int width, int height){
         this(width, height, Tile.FLOOR, Tile.WALL);
     }
     public CaveRoomSupplier(int width, int height, Tile floorTile, Tile wallTile){
+        if(height > 62){
+            System.out.println("Warning: SquidSquad's Region may not work properly when height is too large.");
+        }
         this.width = width;
         this.height = height;
         this.floorTile = floorTile;
@@ -63,17 +66,19 @@ public class CaveRoomSupplier extends RoomSupplier{
                     }
                 }
             }
-            GreasedRegion largest = new GreasedRegion(untrimmed).largestPart();
-            // If every tile is a wall, try again. 
-            //isEmpty() doesn't work??? squidlib devs!!!!!!!!!!1!!
+
+            Region largest = new Region(untrimmed).largestPart();
+            // If every tile is a wall, try again.
+            // isEmpty() does not work, blame squidsquad devs
             if(largest.first().x == -1){
                 continue;
             }
             
+            // translate only moves the top 64 rows? squidsquad devs!!!!
             largest.translate(1 - largest.xBound(true), 1 - largest.yBound(true));
-            largest.alterBounds(largest.getWidth() - width + 1, largest.getHeight() - height + 1);
-            boolean[][] walls = largest.getExternalBorder().decode();
+            largest.alterBounds(largest.xBound(false) - width, largest.yBound(false) - height);
             boolean[][] floors = largest.decode();
+            boolean[][] walls = largest.fringe8way().decode();
             
             room = new Tile[walls.length][walls[0].length];
 

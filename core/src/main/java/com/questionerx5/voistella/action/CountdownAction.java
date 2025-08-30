@@ -7,9 +7,8 @@ public class CountdownAction extends Action{
 
     @Override
     public ActionResult perform(){
-        if(actor instanceof Countdown){
-            Countdown countdown = (Countdown) actor;
-            countdown.countdown();
+        if(actor instanceof Countdown actorCountdown){
+            actorCountdown.countdown();
             return new ActionResult(true);
         }
         return new ActionResult(false);

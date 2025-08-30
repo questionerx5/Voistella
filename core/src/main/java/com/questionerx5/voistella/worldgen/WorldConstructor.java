@@ -1,11 +1,11 @@
 package com.questionerx5.voistella.worldgen;
 
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.ActorFactory;
 import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.Level;
 import com.questionerx5.voistella.World;
 import com.questionerx5.voistella.data.CreatureData;
-import squidpony.squidmath.Coord;
 
 public class WorldConstructor{
     private WorldConstructor(){}
@@ -13,7 +13,16 @@ public class WorldConstructor{
     public static World generate(CreatureData player){
         return linkLevelBuilders(
             new LevelBuilder(30, 30)
-            .addStartRoom(new FixedRoomSupplier("##########\n#........#\n#.##..#..#\n#........#\n#........#\n#..#..#..#\n#..####..#\n#........#\n##########"))
+            .addStartRoom(new FixedRoomSupplier("""
+                ##########
+                #........#
+                #.##..#..#
+                #........#
+                #........#
+                #..#..#..#
+                #..####..#
+                #........#
+                ##########"""))
             .addRooms(100, new BoxRoomSupplier(2, 2, 4, 4), new BoxRoomSupplier(2, 2, 4, 4), new BoxRoomSupplier(6, 6, 8, 8))
             .addLoops()
             .placeEntitiesNonBlocking(ActorFactory.item("health potion"), 7)
@@ -35,8 +44,20 @@ public class WorldConstructor{
             .randomStairs(),
 
             new LevelBuilder(30, 30)
-            .addStartRoom(
-                new FixedRoomSupplier("#############\n#...........#\n#.####.####.#\n#.#.......#.#\n#.#.#####.#.#\n#.#.#...#.#.#\n#.#.......#.#\n#.#.#...#.#.#\n#.#.#####.#.#\n#.#.......#.#\n#.####.####.#\n#...........#\n#############")
+            .addStartRoom(new FixedRoomSupplier("""
+                    #############
+                    #...........#
+                    #.####.####.#
+                    #.#.......#.#
+                    #.#.#####.#.#
+                    #.#.#...#.#.#
+                    #.#.......#.#
+                    #.#.#...#.#.#
+                    #.#.#####.#.#
+                    #.#.......#.#
+                    #.####.####.#
+                    #...........#
+                    #############""")
                 .addEntity(new PlacedEntity(ActorFactory.creature("test:zombie"), Coord.get(5, 5)))
                 .addEntity(new PlacedEntity(ActorFactory.creature("test:zombie"), Coord.get(5, 6)))
                 .addEntity(new PlacedEntity(ActorFactory.creature("test:zombie"), Coord.get(5, 7)))
@@ -67,7 +88,29 @@ public class WorldConstructor{
         );
     }
 
+    public static World generateBasic(CreatureData player){
+        return linkLevelBuilders(
+            new LevelBuilder(79, 23)
+            .addStartRoom(new FixedRoomSupplier("""
+                #############
+                #...........#
+                #...........#
+                #..#.#.###..#
+                #..#.#..#...#
+                #..###..#...#
+                #..#.#..#...#
+                #..#.#.###..#
+                #...........#
+                #...........#
+                #############"""))
+            .addRooms(100, new BoxRoomSupplier(2, 2, 4, 4), new BoxRoomSupplier(6, 6, 8, 8), new BoxRoomSupplier(6, 6, 8, 8))
+            .addLoops()
+            .placeEntities(ActorFactory.creature("test:fungus"), 5)
+        );
+    }
+
     private static Creature player;
+    /** @return the player entity from the last call to linkLevelBuilders() */
     public static Creature player(){
         return player;
     }

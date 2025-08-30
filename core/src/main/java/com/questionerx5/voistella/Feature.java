@@ -1,12 +1,11 @@
 package com.questionerx5.voistella;
 
-import squidpony.squidmath.Coord;
-
 import com.badlogic.gdx.graphics.Color;
-
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.action.Action;
 import com.questionerx5.voistella.action.WaitAction;
-import com.questionerx5.voistella.component.feature.*;
+import com.questionerx5.voistella.component.feature.LevelChangeComponent;
+import com.questionerx5.voistella.component.feature.WinComponent;
 
 public class Feature extends Entity{
     public LevelChangeComponent levelChangeComponent;

@@ -1,12 +1,12 @@
 package com.questionerx5.voistella;
 
-import java.util.function.Function;
+import com.github.tommyettinger.function.ObjToObjFunction;
 
-// An Effect that adds a StatMod when it is applied, and removes it when it ends.
+/** An Effect that adds a StatMod when it is applied, and removes it when it ends.*/
 public class StatEffect extends Effect{
-    public StatEffect(int duration, Function<Creature, Stat> stat, StatMod statMod){
+    public StatEffect(int duration, ObjToObjFunction<Creature, Stat> stat, StatMod statMod){
         super(duration,
-            e -> new com.questionerx5.voistella.action.Action(){ //TODO: shoudl i really be using anonymous classes?
+            e -> new com.questionerx5.voistella.action.Action(){ //TODO: should i really be using anonymous classes?
                 public com.questionerx5.voistella.action.ActionResult perform(){
                     if(e.creature() == null){
                         return new com.questionerx5.voistella.action.ActionResult(false);

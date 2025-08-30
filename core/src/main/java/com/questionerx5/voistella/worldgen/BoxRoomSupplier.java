@@ -25,8 +25,8 @@ public class BoxRoomSupplier extends RoomSupplier{
 
     @Override
     public void generate(){
-        int x = RNGVars.genRNG.between(minX, maxX + 1);
-        int y = RNGVars.genRNG.between(minY, maxY + 1);
+        int x = RNGVars.genRNG.nextInt(minX, maxX + 1);
+        int y = RNGVars.genRNG.nextInt(minY, maxY + 1);
         room = new Tile[x + 2][y + 2];
         Arrays.fill(room[0], wallTile);
         Arrays.fill(room[x + 1], wallTile);

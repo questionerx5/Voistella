@@ -1,8 +1,8 @@
 package com.questionerx5.voistella.action;
 
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.Skill;
-import squidpony.squidmath.Coord;
 
 public class SkillAction extends Action{
     private final Skill skill;
@@ -18,8 +18,7 @@ public class SkillAction extends Action{
         if(skill == null){
             return new ActionResult(false);
         }
-        if(actor instanceof Creature){
-            Creature actorCreature = (Creature) actor;
+        if(actor instanceof Creature actorCreature){
             if(!skill.castable(actorCreature)){
                 return new ActionResult(false);
             }

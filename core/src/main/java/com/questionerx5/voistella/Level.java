@@ -1,17 +1,12 @@
 package com.questionerx5.voistella;
 
-import squidpony.squidmath.GreasedRegion;
-import squidpony.squidmath.Coord;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Queue;
-import java.util.ArrayDeque;
-
+import com.github.tommyettinger.ds.ObjectDeque;
+import com.github.tommyettinger.ds.ObjectList;
+import com.github.tommyettinger.ds.ObjectSet;
+import com.github.yellowstonegames.grid.Coord;
+import com.github.yellowstonegames.grid.Region;
 import com.questionerx5.voistella.Tile.TileFlag;
 import com.questionerx5.voistella.action.Action;
-
 
 public class Level{
     private Tile[][] tiles;
@@ -28,9 +23,9 @@ public class Level{
     }
 
     // Only contains Actors that take turns.
-    private Queue<Actor> actors;
+    private ObjectDeque<Actor> actors;
     // Actors that should be deleted.
-    private Set<Actor> toRemove;
+    private ObjectSet<Actor> toRemove;
     public void addActor(Actor actor){
         if(actor.takesTurns()){
             actors.offer(actor);
@@ -39,8 +34,8 @@ public class Level{
     public void removeActor(Actor actor){
         toRemove.add(actor);
     }
-    private List<Entity> entities;
-    public List<Entity> entities(){
+    private ObjectList<Entity> entities;
+    public ObjectList<Entity> entities(){
         return entities;
     }
     // Not necessary outside this class.
@@ -56,7 +51,7 @@ public class Level{
         }
     }
 
-    private List<Creature> creatures;
+    private ObjectList<Creature> creatures;
     public Creature creatureAt(Coord point){
         for(Creature c : creatures){
             if(c.pos().equals(point)){
@@ -65,7 +60,7 @@ public class Level{
         }
         return null;
     }
-    public List<Creature> creatures(){
+    public ObjectList<Creature> creatures(){
         return creatures;
     }
     public void addCreature(Creature creature){
@@ -77,7 +72,7 @@ public class Level{
         creatures.remove(creature);
     }
 
-    private List<Feature> features;
+    private ObjectList<Feature> features;
     public Feature featureAt(Coord point){
         for(Feature f : features){
             if(f.pos().equals(point)){
@@ -86,7 +81,7 @@ public class Level{
         }
         return null;
     }
-    public List<Feature> features(){
+    public ObjectList<Feature> features(){
         return features;
     }
     public void addFeature(Feature feature){
@@ -98,9 +93,9 @@ public class Level{
         features.remove(feature);
     }
 
-    private List<Item> items;
-    public List<Item> itemsAt(Coord point){
-        List<Item> itemsHere = new ArrayList<>();
+    private ObjectList<Item> items;
+    public ObjectList<Item> itemsAt(Coord point){
+        ObjectList<Item> itemsHere = new ObjectList<>();
         for(Item i : items){
             if(i.pos().equals(point)){
                 itemsHere.add(i);
@@ -108,7 +103,7 @@ public class Level{
         }
         return itemsHere;
     }
-    public List<Item> items(){
+    public ObjectList<Item> items(){
         return items;
     }
     public void addItem(Item item){
@@ -120,6 +115,8 @@ public class Level{
         items.remove(item);
     }
 
+    // TODO: is this better or worse than running multiple instanceofs?
+    // ...maybe polymorphism is better.
     public void add(Actor actor){
         // Check the Actor's type.
         Class<? extends Actor> c = actor.getClass();
@@ -161,8 +158,8 @@ public class Level{
         }
     }
 
-    private List<DisplayEvent> events;
-    public void setEvents(List<DisplayEvent> events){
+    private ObjectList<DisplayEvent> events;
+    public void setEvents(ObjectList<DisplayEvent> events){
         this.events = events;
     }
     public void addEvent(DisplayEvent event){
@@ -174,12 +171,12 @@ public class Level{
         this.width = tiles.length;
         this.height = tiles[0].length;
         this.name = name;
-        this.actors = new ArrayDeque<>();
-        this.toRemove = new HashSet<>();
-        this.entities = new ArrayList<>();
-        this.creatures = new ArrayList<>();
-        this.features = new ArrayList<>();
-        this.items = new ArrayList<>();
+        this.actors = new ObjectDeque<>();
+        this.toRemove = new ObjectSet<>();
+        this.entities = new ObjectList<>();
+        this.creatures = new ObjectList<>();
+        this.features = new ObjectList<>();
+        this.items = new ObjectList<>();
     }
 
     public boolean inBounds(int x, int y){
@@ -192,29 +189,30 @@ public class Level{
         return inBounds(p.x, p.y) ? tiles[p.x][p.y] : Tile.BOUNDS;
     }
 
-    public GreasedRegion openRegions(){
+    public Region openRegions(){
         return Tile.unflaggedRegions(tiles, TileFlag.BLOCKING);
     }
-    public GreasedRegion entityRegions(){
+    public Region entityRegions(){
         Coord[] occupied = new Coord[entities.size()];
         for(int i = 0; i < entities.size(); i++){
             occupied[i] = entities.get(i).pos();
         }
-        return new GreasedRegion(width, height, occupied);
+        return new Region(width, height, occupied);
     }
     public Coord openPoint(){
         return openRegions().andNot(entityRegions()).singleRandom(RNGVars.genRNG);
     }
-    public double[][] sightResistances(){
-        double[][] result = new double[this.width][this.height];
+    //TODO: could this be cached?
+    public float[][] sightResistances(){
+        float[][] result = new float[this.width][this.height];
         for(int x = 0; x < width; x++){
             for(int y = 0; y < height; y++){
-                result[x][y] = tiles[x][y].testFlag(TileFlag.BLOCKS_LOS) ? 1.0 : 0.0;
+                result[x][y] = tiles[x][y].testFlag(TileFlag.BLOCKS_LOS) ? 1 : 0;
             }
         }
         return result;
     }
-    public double[][] movementResistances(double blocking, double nonBlocking){
+    public float[][] movementResistances(float blocking, float nonBlocking){
         return Tile.movementResistances(tiles, blocking, nonBlocking);
     }
 

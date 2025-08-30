@@ -1,6 +1,6 @@
 package com.questionerx5.voistella.component.feature;
 
-import squidpony.squidmath.Coord;
+import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.Level;
 
 public class LevelChangeComponent implements FeatureComponent{

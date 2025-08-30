@@ -1,20 +1,18 @@
 package com.questionerx5.voistella;
 
-import squidpony.squidmath.GWTRNG;
-import squidpony.squidmath.IRNG;
+import com.github.tommyettinger.random.AceRandom;
+import com.github.tommyettinger.random.EnhancedRandom;
 
 public class RNGVars{
-    public static IRNG genRNG, aiRNG;
+    public static EnhancedRandom genRNG, aiRNG;
     
     public static void init(){
-        IRNG rng = new GWTRNG();
-        genRNG = new GWTRNG(rng.nextInt());
-        aiRNG = new GWTRNG(rng.nextInt());
+        init(EnhancedRandom.seedFromMath());
     }
-    public static void init(int seed){
-        IRNG rng = new GWTRNG(seed);
-        genRNG = new GWTRNG(rng.nextInt());
-        aiRNG = new GWTRNG(rng.nextInt());
+    public static void init(long seed){
+        genRNG = new AceRandom(seed);
+        // I don't know how to differentiate these
+        aiRNG = new AceRandom(~seed);
     }
     
     private RNGVars(){}

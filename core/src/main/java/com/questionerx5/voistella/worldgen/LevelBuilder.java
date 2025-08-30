@@ -1,34 +1,33 @@
 package com.questionerx5.voistella.worldgen;
 
+import java.util.Arrays;
+
+import com.github.tommyettinger.ds.ObjectList;
+import com.github.yellowstonegames.grid.Coord;
+import com.github.yellowstonegames.grid.Region;
+import com.github.yellowstonegames.path.AStarSearch;
+import com.github.yellowstonegames.path.Heuristic;
 import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.Level;
 import com.questionerx5.voistella.RNGVars;
 import com.questionerx5.voistella.Tile;
 import com.questionerx5.voistella.Tile.TileFlag;
-import com.questionerx5.voistella.data.EntityData;
 import com.questionerx5.voistella.data.CreatureData;
-
-//import squidpony.squidgrid.Direction;
-import squidpony.squidmath.Coord;
-import squidpony.squidmath.GreasedRegion;
-import squidpony.squidmath.AStarSearch;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.questionerx5.voistella.data.EntityData;
 
 public class LevelBuilder{
     private int width, height;
     private Tile[][] level;
-    private List<Coord> stairsUp, stairsDown;
-    public List<Coord> stairsUp(){
+    private ObjectList<Coord> stairsUp, stairsDown;
+    public ObjectList<Coord> stairsUp(){
         return stairsUp;
     }
-    public List<Coord> stairsDown(){
+    public ObjectList<Coord> stairsDown(){
         return stairsDown;
     }
-    private List<PlacedEntity> entities;
-    private List<Coord> blocked;
-    private GreasedRegion openRegions;
+    private ObjectList<PlacedEntity> entities;
+    private ObjectList<Coord> blocked;
+    private Region openRegions;
     private Coord openPoint(){
         if(openRegions == null){
             openRegions = Tile.unflaggedRegions(level, TileFlag.BLOCKING).removeSeveral(blocked);
@@ -53,6 +52,9 @@ public class LevelBuilder{
     }
 
     public LevelBuilder(int width, int height){
+        if(height > 64){
+            System.out.println("Warning: SquidSquad's Region may not work properly when height is too large.");
+        }
         this.width = width;
         this.height = height;
         this.level = new Tile[width][height];
@@ -60,10 +62,10 @@ public class LevelBuilder{
             Arrays.fill(row, Tile.BOUNDS);
         }
 
-        this.stairsUp = new ArrayList<>();
-        this.stairsDown = new ArrayList<>();
-        this.entities = new ArrayList<>();
-        this.blocked = new ArrayList<>();
+        this.stairsUp = new ObjectList<>();
+        this.stairsDown = new ObjectList<>();
+        this.entities = new ObjectList<>();
+        this.blocked = new ObjectList<>();
     }
 
     public LevelBuilder addStartRoom(RoomSupplier supplier){
@@ -85,8 +87,8 @@ public class LevelBuilder{
             if(!anyFloors){
                 continue;
             }
-            int xOffset = RNGVars.genRNG.between(0, width - room.length + 1);
-            int yOffset = RNGVars.genRNG.between(0, height - room[0].length + 1);
+            int xOffset = RNGVars.genRNG.nextInt(0, width - room.length + 1);
+            int yOffset = RNGVars.genRNG.nextInt(0, height - room[0].length + 1);
             pasteRoom(room, xOffset, yOffset);
             addStairs(supplier.stairsUp(), supplier.stairsDown(), xOffset, yOffset);
             addEntities(supplier.entities(), xOffset, yOffset);
@@ -97,7 +99,7 @@ public class LevelBuilder{
 
     public LevelBuilder addRooms(int numAttempts, RoomSupplier... suppliers){
         for(int i = 0; i < numAttempts; i++){
-            RoomSupplier supplier = RNGVars.genRNG.getRandomElement(suppliers);
+            RoomSupplier supplier = RNGVars.genRNG.randomElement(suppliers);
             supplier.generate();
             Tile[][] room = supplier.room();
             
@@ -105,8 +107,8 @@ public class LevelBuilder{
             if(width < room.length || height < room[0].length){
                 continue;
             }
-            GreasedRegion blocked = Tile.flaggedRegions(level, TileFlag.UNREPLACEABLE);
-            GreasedRegion entrances = blocked
+            Region blocked = Tile.flaggedRegions(level, TileFlag.UNREPLACEABLE);
+            Region entrances = blocked
             .copy()
             .fringe()
             .and(Tile.flaggedRegions(level, TileFlag.BECOMES_ENTRANCE));
@@ -116,9 +118,10 @@ public class LevelBuilder{
                 // Coord a = roomEntrances.singleRandom(RNGVars.genRNG);
                 // Coord b = entrances.singleRandom(RNGVars.genRNG);
                 //and then b - a, i guess. make sure to check for out of bounds.
-                int xOffset = RNGVars.genRNG.between(0, width - room.length + 1);
-                int yOffset = RNGVars.genRNG.between(0, height - room[0].length + 1);
-                GreasedRegion temp = Tile.unflaggedRegions(room, TileFlag.BLANK, xOffset, yOffset);
+                int xOffset = RNGVars.genRNG.nextInt(0, width - room.length + 1);
+                int yOffset = RNGVars.genRNG.nextInt(0, height - room[0].length + 1);
+                Region temp = Tile.unflaggedRegions(room, TileFlag.BLANK, xOffset, yOffset);
+                // squidsquad devs, why doesn't this work when height > 64
                 if(blocked.intersects(temp)){
                     continue;
                 }
@@ -150,7 +153,7 @@ public class LevelBuilder{
             }
         }
     }
-    private void addStairs(List<Coord> stairsUp, List<Coord> stairsDown, int xOffset, int yOffset){
+    private void addStairs(ObjectList<Coord> stairsUp, ObjectList<Coord> stairsDown, int xOffset, int yOffset){
         for(Coord pos : stairsUp){
             Coord translated = pos.translate(xOffset, yOffset);
             this.stairsUp.add(translated);
@@ -164,7 +167,7 @@ public class LevelBuilder{
             unmarkOpen(translated);
         }
     }
-    private void addEntities(List<PlacedEntity> entities, int xOffset, int yOffset){
+    private void addEntities(ObjectList<PlacedEntity> entities, int xOffset, int yOffset){
         if(entities == null){
             return;
         }
@@ -181,8 +184,8 @@ public class LevelBuilder{
     }
     public LevelBuilder addLoops(int tries, Tile passage){
         for(int i = 0; i < tries; i++){
-            int x = RNGVars.genRNG.between(1, width - 1);
-            int y = RNGVars.genRNG.between(1, height - 1);
+            int x = RNGVars.genRNG.nextInt(1, width - 1);
+            int y = RNGVars.genRNG.nextInt(1, height - 1);
             tryToAddLoop(x, y, passage);
         }
         return this;
@@ -191,9 +194,9 @@ public class LevelBuilder{
         return addLoops(Tile.FLOOR);
     }
     public LevelBuilder addLoops(Tile passage){
-        GreasedRegion entrances = Tile.flaggedRegions(level, TileFlag.BECOMES_ENTRANCE);
+        Region entrances = Tile.flaggedRegions(level, TileFlag.BECOMES_ENTRANCE);
         Coord[] remaining = entrances.toArray(new Coord[entrances.size()]);
-        RNGVars.genRNG.shuffleInPlace(remaining);
+        RNGVars.genRNG.shuffle(remaining);
         for(Coord point : remaining){
             tryToAddLoop(point.x, point.y, passage);
         }
@@ -220,8 +223,8 @@ public class LevelBuilder{
             return;
         }
 
-        double[][] weights = Tile.movementResistances(level, -1, 1);
-        AStarSearch aStar = new AStarSearch(weights, AStarSearch.SearchType.MANHATTAN);
+        float[][] weights = Tile.movementResistances(level, -1, 1);
+        AStarSearch aStar = new AStarSearch(weights, Heuristic.CHEBYSHEV);
         int pathLength;
         if(up){
             pathLength = aStar.path(x, y - 1, x, y + 1).size();

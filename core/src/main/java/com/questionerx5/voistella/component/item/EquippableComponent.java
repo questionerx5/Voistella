@@ -1,7 +1,7 @@
 package com.questionerx5.voistella.component.item;
 
-import com.questionerx5.voistella.EquipSlot;
 import com.questionerx5.voistella.Attack;
+import com.questionerx5.voistella.EquipSlot;
 
 public class EquippableComponent implements ItemComponent{
     public final Attack attack;

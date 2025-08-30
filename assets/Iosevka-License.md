@@ -1,52 +1,7 @@
-The font is licensed under SIL OFL Version 1.1.
-This covers the files in this distribution, when present:
- * Iosevka-distance.png
- * Iosevka-Family-distance.png
- * Iosevka-Family-msdf.png
- * Iosevka-Light-distance.png
- * Iosevka-msdf.png
- * Iosevka-Oblique-msdf.png
- * Iosevka-Slab-distance.png
- * Iosevka-Slab-Family-distance.png
- * Iosevka-Slab-Family-msdf.png
- * Iosevka-Slab-Light-distance.png
- * Iosevka-Slab-msdf.png
- * Iosevka-Slab-Oblique-msdf.png
- * Iosevka-distance.fnt
- * Iosevka-Family-distance.fnt
- * Iosevka-Family-msdf.fnt
- * Iosevka-Light-distance.fnt
- * Iosevka-msdf.fnt
- * Iosevka-Oblique-msdf.fnt
- * Iosevka-Slab-distance.fnt
- * Iosevka-Slab-Family-distance.fnt
- * Iosevka-Slab-Family-msdf.fnt
- * Iosevka-Slab-Light-distance.fnt
- * Iosevka-Slab-msdf.fnt
- * Iosevka-Slab-Oblique-msdf.fnt
-
-The support code is licensed under Berkeley Software Distribution license.
-The support code is not included in this distribution. It was used to prepare the aforementioned files.
-
----
----
-
-Copyright (c) 2015-2016 Belleve Invis (belleve@typeof.net).
-
-Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-* Neither the name of Belleve Invis nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL BELLEVE INVIS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
------------------------
-
----
-
-Copyright 2015-2016, Belleve Invis (belleve@typeof.net).
+Copyright (c) 2015-2025, Renzhi Li (aka. Belleve Invis, belleve@typeof.net)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
+
 This license is copied below, and is also available with a FAQ at:
 http://scripts.sil.org/OFL
 

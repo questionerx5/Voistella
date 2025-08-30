@@ -1,9 +1,9 @@
 package com.questionerx5.voistella.action;
 
 import com.questionerx5.voistella.Creature;
-import com.questionerx5.voistella.Item;
 import com.questionerx5.voistella.DisplayEvent;
 import com.questionerx5.voistella.DisplayEvent.EventType;
+import com.questionerx5.voistella.Item;
 
 public class DropAction extends Action{
     private final Item item;
@@ -17,8 +17,7 @@ public class DropAction extends Action{
         if(item == null){
             return new ActionResult(false);
         }
-        if(actor instanceof Creature){
-            Creature actorCreature = (Creature) actor;
+        if(actor instanceof Creature actorCreature){
             if(!actorCreature.inventory().remove(item)){
                 return new ActionResult(false);
             }

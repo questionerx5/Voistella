@@ -17,8 +17,7 @@ public class AttackAction extends Action{
         if(target == null){
             return new ActionResult(false);
         }
-        if(actor instanceof Creature){
-            Creature actorCreature = (Creature) actor;
+        if(actor instanceof Creature actorCreature){
             if(actorCreature == target){
                 // Special message if attacking self.
                 actorCreature.emitMessage("@Name attack$ @myself for [RED]~[WHITE] damage.", true, Integer.toString(actorCreature.attack().damage));

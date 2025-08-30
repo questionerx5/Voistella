@@ -15,8 +15,8 @@ public class EffectAction extends Action{
     @Override
     public ActionResult perform(){
         if(target == null || effect == null){
-            if(actor instanceof Creature){
-                ((Creature) actor).messageError("There's nothing there to affect.");
+            if(actor instanceof Creature actorCreature){
+                actorCreature.messageError("There's nothing there to affect.");
             }
             return new ActionResult(false);
         }
