@@ -2,16 +2,13 @@ package com.questionerx5.voistella;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.github.tommyettinger.ds.IntDeque;
 import com.github.yellowstonegames.press.SquidInput;
 import com.questionerx5.voistella.screen.BaseScreen;
 import com.questionerx5.voistella.screen.StartScreen;
@@ -46,47 +43,7 @@ public class Main extends Game{
                 this.screen = nextScreen;
                 setScreen(nextScreen);
             }
-        }){
-            //SquidSquad is not updated to a sufficiently recent version of jdxgdxds so I guess i'm doing this
-            // TODO: Watch for new SquidSquad releases
-            @Override
-            public void drain () {
-                IntDeque qu = queue;
-
-                if (keyAction == null || qu.isEmpty()) {
-                    qu.clear();
-                    return;
-                }
-
-                for (int i = 0, n = qu.size(), t; i < n; ) {
-                    t = qu.get(i++);
-                    t = mapping.getOrDefault(t, t);
-                    keyAction.handle((char)t, (t & 0x10000) != 0, (t & 0x20000) != 0, (t & 0x40000) != 0);
-                }
-
-                qu.clear();
-            }
-
-            @Override
-            public boolean hasNext()
-            {
-                if( 
-                        Gdx.input.isKeyPressed(Input.Keys.ANY_KEY)
-                        && !Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)
-                        && !Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)
-                        && !Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)
-                        && !Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)
-                        && !Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT)
-                        && !Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT)
-                        && !heldCodes.isEmpty()
-                        && TimeUtils.timeSinceMillis(lastKeyTime) > repeatGapMillis // defaults to 220 ms
-                        )
-                {
-                    keyDown(heldCodes.keyAt(heldCodes.size() - 1));
-                }
-                return queue.notEmpty();
-            }
-        };
+        });
         Gdx.input.setInputProcessor(input);
 
         // Setup font.
