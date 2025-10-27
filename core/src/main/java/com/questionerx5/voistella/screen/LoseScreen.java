@@ -5,9 +5,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.yellowstonegames.press.SquidInput;
 import com.questionerx5.voistella.Main;
 
-public class StartScreen extends BaseScreen{
-    public StartScreen(final Main game){
+public class LoseScreen extends BaseScreen{
+    private final String deathMessage;
+
+    public LoseScreen(final Main game, final String deathMesssage){
         super(game);
+        this.deathMessage = deathMesssage;
     }
 
     @Override
@@ -19,8 +22,10 @@ public class StartScreen extends BaseScreen{
         game.batch.begin();
 
         game.fillRect(0, 0, Main.COLUMNS, Main.ROWS, Color.DARK_GRAY);
-        game.drawText(1, 1, "Voistella");
-        game.drawText(1, 2, "Press Enter to start.");
+        game.drawText(1, 1, "HAHAHAHAHA skill issue");
+        game.drawText(1, 2, deathMessage);
+        game.drawText(1, 3, "Y O U   L O S T", Color.RED);
+        game.drawText(1, 4, "Press Enter to restart.");
 
 		game.batch.end();
     }

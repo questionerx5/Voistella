@@ -105,6 +105,7 @@ public class WorldConstructor{
                 #############"""))
             .addRooms(100, new BoxRoomSupplier(2, 2, 4, 4), new BoxRoomSupplier(6, 6, 8, 8), new BoxRoomSupplier(6, 6, 8, 8))
             .addLoops()
+            .placePlayer(player)
             .placeEntities(ActorFactory.creature("test:fungus"), 5)
         );
     }

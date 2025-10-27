@@ -5,8 +5,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.yellowstonegames.press.SquidInput;
 import com.questionerx5.voistella.Main;
 
-public class StartScreen extends BaseScreen{
-    public StartScreen(final Main game){
+public class WinScreen extends BaseScreen{
+    public WinScreen(final Main game){
         super(game);
     }
 
@@ -19,8 +19,8 @@ public class StartScreen extends BaseScreen{
         game.batch.begin();
 
         game.fillRect(0, 0, Main.COLUMNS, Main.ROWS, Color.DARK_GRAY);
-        game.drawText(1, 1, "Voistella");
-        game.drawText(1, 2, "Press Enter to start.");
+        game.drawText(1, 1, "You won!", Color.GREEN);
+        game.drawText(1, 2, "Press Enter to restart.");
 
 		game.batch.end();
     }
