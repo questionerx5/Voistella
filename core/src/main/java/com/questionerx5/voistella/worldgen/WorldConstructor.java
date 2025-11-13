@@ -39,7 +39,7 @@ public class WorldConstructor{
             .addRooms(50, new BoxRoomSupplier(3, 3, 7, 7))
             .addLoops()
             .placeEntities(ActorFactory.creature("test:fungus"), 50)
-            .placeEntities(ActorFactory.creatureNewInstance("test:helper").setAlly(true), 1)
+            .placeEntities(ActorFactory.creatureCopy("test:helper").setAlly(true), 1)
             .placeEntities(ActorFactory.creature("test:scaredy cat"), 3)
             .randomStairs(),
 
@@ -62,7 +62,7 @@ public class WorldConstructor{
                 .addEntity(new PlacedEntity(ActorFactory.creature("test:zombie"), Coord.get(5, 6)))
                 .addEntity(new PlacedEntity(ActorFactory.creature("test:zombie"), Coord.get(5, 7)))
                 .addEntity(new PlacedEntity(ActorFactory.creature("test:zombie"), Coord.get(6, 5)))
-                .addEntity(new PlacedEntity(ActorFactory.creatureNewInstance("test:goblin")
+                .addEntity(new PlacedEntity(ActorFactory.creatureCopy("test:goblin")
                     .setEquipment(ActorFactory.item("bow")), Coord.get(6, 6)))
                 .addEntity(new PlacedEntity(ActorFactory.creature("test:zombie"), Coord.get(6, 7)))
                 .addEntity(new PlacedEntity(ActorFactory.creature("test:zombie"), Coord.get(7, 5)))
@@ -72,7 +72,7 @@ public class WorldConstructor{
             .addRooms(150, new BoxRoomSupplier(2, 2, 4, 4))
             .addLoops()
             .placeEntities(ActorFactory.creature("test:zombie"), 15)
-            .placeEntities(ActorFactory.creatureNewInstance("test:helper").setAlly(true), 1)
+            .placeEntities(ActorFactory.creatureCopy("test:helper").setAlly(true), 1)
             .randomStairs(),
 
             new LevelBuilder(50, 50)
@@ -83,7 +83,7 @@ public class WorldConstructor{
             .placeEntities(ActorFactory.creature("test:bat"), 20)
             .placeEntities(ActorFactory.creature("test:rogue"), 5)
             .placeEntities(ActorFactory.creature("test:stealer"), 25) //TODO: Determine source of lag with large numbers of entities
-            .placeEntities(ActorFactory.creatureNewInstance("test:goblin").setEquipment(ActorFactory.item("bow")), 5)
+            .placeEntities(ActorFactory.creatureCopy("test:goblin").setEquipment(ActorFactory.item("bow")), 5)
             .randomStairs()
         );
     }

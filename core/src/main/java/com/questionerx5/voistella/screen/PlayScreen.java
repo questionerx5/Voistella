@@ -2,10 +2,13 @@ package com.questionerx5.voistella.screen;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.github.tommyettinger.digital.MathTools;
 import com.github.tommyettinger.ds.ObjectList;
 import com.github.yellowstonegames.press.SquidInput;
+import com.github.yellowstonegames.smooth.*;
 import com.questionerx5.voistella.ActorFactory;
 import com.questionerx5.voistella.Creature;
+import com.questionerx5.voistella.DisplayEvent;
 import com.questionerx5.voistella.Entity;
 import com.questionerx5.voistella.Feature;
 import com.questionerx5.voistella.Item;
@@ -20,14 +23,47 @@ public class PlayScreen extends BaseScreen{
     private World world;
     private Level level;
     private Creature player;
-    private boolean stopped = false;
+
+    private ObjectList<DisplayEvent> events;
+
+    private class TimeGlider{
+        private Glider glider;
+        private float length;
+
+        public TimeGlider(Glider glider, float length){
+            this.glider = glider;
+            var baseCompleteRunner = glider.getCompleteRunner();
+            if(baseCompleteRunner == null){
+                glider.setCompleteRunner(() -> {PlayScreen.this.glider = null; currentEvent = null;});
+            }
+            else{
+                glider.setCompleteRunner(() -> {baseCompleteRunner.run(); PlayScreen.this.glider = null; currentEvent = null;});
+            }
+            this.length = length;
+        }
+
+        public float getFloat(String name){
+            return glider.getFloat(name);
+        }
+
+        public void step(float delta){
+            glider.setChange(glider.getChange() + delta / length);
+        }
+    }
+
+    // Current event being displayed.
+    private DisplayEvent currentEvent;
+    // Glider for current event.
+    private TimeGlider glider;
+
 
     public PlayScreen(final Main game){
         super(game);
         RNGVars.init();
         world = WorldConstructor.generateBasic(ActorFactory.creature("player").makePlayer(new ObjectList<>()));
         player = WorldConstructor.player();
-        world.setEvents(new ObjectList<>());
+        events = new ObjectList<>();
+        world.setEvents(events);
         level = world.level(0);
     }
 
@@ -48,16 +84,75 @@ public class PlayScreen extends BaseScreen{
         boolean requirePlayerInput = false;
         // An iteration is "boring" if the player is dead and no animation (including off-screen ones) played.
         int boringProcesses = 0;
-        while(!requirePlayerInput && !stopped && boringProcesses < 50){
+        while(!requirePlayerInput && currentEvent == null && boringProcesses < 50){
             requirePlayerInput = !player.lastNonNullLevel().process();
 
             if(!player.inWorld()){
                 boringProcesses++;
             }
+            
+            while(currentEvent == null && !events.isEmpty()){
+                currentEvent = events.pop();
+                glider = switch(currentEvent.type){
+                    case BUMP -> {
+                        float interpAmount = currentEvent.prevPos.distance(currentEvent.newPos) * 0.35f;
+                        float bumpToX = MathTools.lerp(currentEvent.prevPos.x, currentEvent.newPos.x, interpAmount);
+                        float bumpToY = MathTools.lerp(currentEvent.prevPos.y, currentEvent.newPos.y, interpAmount);
+                        yield new TimeGlider(
+                            new SequenceGlider(
+                                new Glider[]{
+                                    new Glider(new Glider.Changer("x", currentEvent.prevPos.x, bumpToX),
+                                               new Glider.Changer("y", currentEvent.prevPos.y, bumpToY)),
+                                    new Glider(new Glider.Changer("x", bumpToX, currentEvent.prevPos.x),
+                                               new Glider.Changer("y", bumpToY, currentEvent.prevPos.y)),
+                                }, 
+                                new float[]{
+                                    1f,
+                                    1f
+                                }),
+                            0.1f
+                        );
+                    }
+
+                    case MOVE -> new TimeGlider(
+                        new CoordGlider(currentEvent.prevPos, currentEvent.newPos),
+                        0.075f
+                    );
+
+                    case PROJECTILE -> new TimeGlider(
+                        new CoordGlider(currentEvent.prevPos, currentEvent.newPos),
+                        currentEvent.prevPos.distance(currentEvent.newPos) * 0.05f
+                    );
+                    case HIT, DIE, PICKED_UP, LEAVE_LEVEL, ENTER_LEVEL, DROPPED -> null; // no animation needed
+                };
+                if(glider == null){
+                    currentEvent = null;
+                }
+                else{
+                    boringProcesses = 0;
+                }
+            }
         }
 
+        // Entity that the current event is moving, and should therefore not be drawn normally
+        Entity eventEntity = null;
+        if(currentEvent != null){
+            switch(currentEvent.type){
+                case BUMP, MOVE -> {
+                    eventEntity = currentEvent.entity;
+                    game.drawText(glider.getFloat("x"), glider.getFloat("y"), eventEntity.glyph(), eventEntity.color());
+                }
+                case PROJECTILE -> {
+                    game.drawText(glider.getFloat("x"), glider.getFloat("y"), '·', Color.WHITE);
+                }
+                case HIT, DIE, PICKED_UP, LEAVE_LEVEL, ENTER_LEVEL, DROPPED -> {} // no animation needed
+            }
+            glider.step(delta);
+        }
         for(Entity e : level.entities()){
-            game.drawText(e.pos().x, e.pos().y, e.glyph(), e.color());
+            if(e != eventEntity){
+                game.drawText(e.pos().x, e.pos().y, e.glyph(), e.color());
+            }
         }
 
         game.batch.end();

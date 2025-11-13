@@ -1,6 +1,6 @@
 package com.questionerx5.voistella;
 
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Color; // TODO: Determine class for colors, this doesn't have any green (Color.GREEN is lime)
 import com.github.tommyettinger.ds.ObjectObjectMap;
 import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.component.feature.*;
@@ -17,7 +17,7 @@ public class ActorFactory{
         }
         return result;
     }
-    public static CreatureData creatureNewInstance(String id){
+    public static CreatureData creatureCopy(String id){
         return new CreatureData(creature(id));
     }
     private static void initCreatures(){
@@ -67,7 +67,7 @@ public class ActorFactory{
                 ActionSupplier.EQUIP(ActionSupplier.PICKUP(ActionSupplier.CHASE(ActionSupplier.WANDER))), true,
                 10, 0, 100)
             );
-            creatures.put("test:scaredy cat",
+            creatures.put("test:scaredy_cat",
                 new CreatureData('c', Color.ORANGE, "scaredy cat",
                 ActionSupplier.HP_CHECK(1,
                     ActionSupplier.FLEE(ActionSupplier.NOTHING),

@@ -47,6 +47,7 @@ public class Main extends Game{
         Gdx.input.setInputProcessor(input);
 
         // Setup font.
+        // TODO: Switch to TextraTypist?
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("IosevkaFixed-Extended.ttf"));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
         parameter.size = FONT_QUALITY;
@@ -100,36 +101,36 @@ public class Main extends Game{
     }
 
     /** Draws a character at the given grid coordinates; does not set color. */
-    private void drawChar(int x, int y, char glyph){
+    private void drawChar(float x, float y, char glyph){
         font.draw(batch, Character.toString(glyph),
             (x + 0.5f) * COLUMN_SCALE - font.getSpaceXadvance() / 2,
             (ROWS - y - 1 + 0.5f) * ROW_SCALE + font.getCapHeight() / 2);
     }
 
     /** Draws the given character at the given grid coordinates, in white. */
-    public void drawText(int x, int y, char glyph){
+    public void drawText(float x, float y, char glyph){
         drawText(x, y, glyph, Color.WHITE);
     }
     /** Draws the given character at the given grid coordinates.
      * @param color The color, as a packed float (that could be passed into e.g. {@link com.badlogic.gdx.graphics.g2d.Batch#setPackedColor(float)})
      */
-    public void drawText(int x, int y, char glyph, float color){
+    public void drawText(float x, float y, char glyph, float color){
         Color.abgr8888ToColor(font.getColor(), color);
         drawChar(x, y, glyph);
     }
     /** Draws the given character at the given grid coordinates. */
-    public void drawText(int x, int y, char glyph, Color color){
+    public void drawText(float x, float y, char glyph, Color color){
         font.setColor(color);
         drawChar(x, y, glyph);
     }
     
     /** Draws the given String starting at the given grid coordinates, in white. */
-    public void drawText(int x, int y, String string){
+    public void drawText(float x, float y, String string){
         drawText(x, y, string, Color.WHITE);
     }
     /** Draws the given String starting at the given grid coordinates. */
     //TODO: Allow color formatting
-    public void drawText(int x, int y, String string, Color color){
+    public void drawText(float x, float y, String string, Color color){
         int lineNum = 0;
         font.setColor(color);
         for(String line : string.split("\\n")){
