@@ -95,7 +95,7 @@ public class PlayScreen extends BaseScreen{
                 currentEvent = events.pop();
                 glider = switch(currentEvent.type){
                     case BUMP -> {
-                        float interpAmount = currentEvent.prevPos.distance(currentEvent.newPos) * 0.35f;
+                        float interpAmount = 0.4f / currentEvent.prevPos.distance(currentEvent.newPos);
                         float bumpToX = MathTools.lerp(currentEvent.prevPos.x, currentEvent.newPos.x, interpAmount);
                         float bumpToY = MathTools.lerp(currentEvent.prevPos.y, currentEvent.newPos.y, interpAmount);
                         yield new TimeGlider(
@@ -110,7 +110,7 @@ public class PlayScreen extends BaseScreen{
                                     1f,
                                     1f
                                 }),
-                            0.1f
+                            0.125f
                         );
                     }
 
