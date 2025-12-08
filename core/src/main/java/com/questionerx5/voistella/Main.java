@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.github.yellowstonegames.press.SquidInput;
 import com.questionerx5.voistella.screen.BaseScreen;
@@ -63,11 +64,19 @@ public class Main extends Game{
 
     @Override
     public void render(){
+        ScreenUtils.clear(Color.BLACK);
+
+        viewport.apply();
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.begin();
+
         super.render();
 
         if(input.hasNext()){
             input.drain();
         }
+
+        batch.end();
     }
 
     @Override

@@ -8,7 +8,7 @@ public class CaveRoomSupplier extends RoomSupplier{
     private final int width, height;
     private final Tile floorTile, wallTile;
 
-    // Note that the width/height of the room generated, including external, can be up to (width+2)/(height+2).
+    // Note that the dimensions of the generated room, including external walls, can be up to (width+2) by (height+2).
     public CaveRoomSupplier(int width, int height){
         this(width, height, Tile.FLOOR, Tile.WALL);
     }
@@ -43,6 +43,7 @@ public class CaveRoomSupplier extends RoomSupplier{
                     System.arraycopy(untrimmed[i], 0, copy[i], 0, height + 2);
                 }
                 //Edges stay walls permanently.
+                // TODO: in that case, couldn't i just check for out-of-bounds and count that as a wall?
                 for(int x = 1; x < width + 1; x++){
                     for(int y = 1; y < height + 1; y++){
                         // Count the number of nearby floors/walls.
@@ -69,8 +70,8 @@ public class CaveRoomSupplier extends RoomSupplier{
 
             Region largest = new Region(untrimmed).largestPart();
             // If every tile is a wall, try again.
-            // isEmpty() does not work, blame squidsquad devs
-            if(largest.first().x == -1){
+            // isEmpty() is bugged (should be ct==0 not ct>0), can't use that. squidsquad devs.
+            if(largest.size() == 0){
                 continue;
             }
             
@@ -89,7 +90,7 @@ public class CaveRoomSupplier extends RoomSupplier{
             }
             return;
         }
-        // bruh
+        // give up
         room = new Tile[][]{{wallTile, wallTile, wallTile}, {wallTile, floorTile, wallTile}, {wallTile, wallTile, wallTile}};
     }
 }

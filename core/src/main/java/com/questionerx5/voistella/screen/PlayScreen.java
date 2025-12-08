@@ -1,7 +1,6 @@
 package com.questionerx5.voistella.screen;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.github.tommyettinger.digital.MathTools;
 import com.github.tommyettinger.ds.ObjectList;
 import com.github.yellowstonegames.press.SquidInput;
@@ -26,11 +25,11 @@ public class PlayScreen extends BaseScreen{
 
     private ObjectList<DisplayEvent> events;
 
-    private class TimeGlider{
+    private class DurationGlider{
         private Glider glider;
-        private float length;
+        private float duration;
 
-        public TimeGlider(Glider glider, float length){
+        public DurationGlider(Glider glider, float duration){
             this.glider = glider;
             var baseCompleteRunner = glider.getCompleteRunner();
             if(baseCompleteRunner == null){
@@ -39,7 +38,7 @@ public class PlayScreen extends BaseScreen{
             else{
                 glider.setCompleteRunner(() -> {baseCompleteRunner.run(); PlayScreen.this.glider = null; currentEvent = null;});
             }
-            this.length = length;
+            this.duration = duration;
         }
 
         public float getFloat(String name){
@@ -47,14 +46,14 @@ public class PlayScreen extends BaseScreen{
         }
 
         public void step(float delta){
-            glider.setChange(glider.getChange() + delta / length);
+            glider.setChange(glider.getChange() + delta / duration);
         }
     }
 
     // Current event being displayed.
     private DisplayEvent currentEvent;
     // Glider for current event.
-    private TimeGlider glider;
+    private DurationGlider glider;
 
 
     public PlayScreen(final Main game){
@@ -69,11 +68,6 @@ public class PlayScreen extends BaseScreen{
 
     @Override
     public void render(float delta){
-        ScreenUtils.clear(Color.BLACK);
-
-        game.viewport.apply();
-        game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
-        game.batch.begin();
         for(int y = 0; y < Main.ROWS; y++){
             for(int x = 0; x < Main.COLUMNS; x++){
                 game.fillCell(x, y, level.tile(x, y).bg());
@@ -95,16 +89,18 @@ public class PlayScreen extends BaseScreen{
                 currentEvent = events.pop();
                 glider = switch(currentEvent.type){
                     case BUMP -> {
-                        float interpAmount = 0.4f / currentEvent.prevPos.distance(currentEvent.newPos);
-                        float bumpToX = MathTools.lerp(currentEvent.prevPos.x, currentEvent.newPos.x, interpAmount);
-                        float bumpToY = MathTools.lerp(currentEvent.prevPos.y, currentEvent.newPos.y, interpAmount);
-                        yield new TimeGlider(
+                        var prevPos = currentEvent.prevPos;
+                        var newPos = currentEvent.newPos;
+                        float interpAmount = prevPos.equals(newPos) ? 1 : (0.4f / prevPos.distance(newPos));
+                        float bumpToX = MathTools.lerp(prevPos.x, newPos.x, interpAmount);
+                        float bumpToY = MathTools.lerp(prevPos.y, newPos.y, interpAmount);
+                        yield new DurationGlider(
                             new SequenceGlider(
                                 new Glider[]{
-                                    new Glider(new Glider.Changer("x", currentEvent.prevPos.x, bumpToX),
-                                               new Glider.Changer("y", currentEvent.prevPos.y, bumpToY)),
-                                    new Glider(new Glider.Changer("x", bumpToX, currentEvent.prevPos.x),
-                                               new Glider.Changer("y", bumpToY, currentEvent.prevPos.y)),
+                                    new Glider(new Glider.Changer("x", prevPos.x, bumpToX),
+                                               new Glider.Changer("y", prevPos.y, bumpToY)),
+                                    new Glider(new Glider.Changer("x", bumpToX, prevPos.x),
+                                               new Glider.Changer("y", bumpToY, prevPos.y)),
                                 }, 
                                 new float[]{
                                     1f,
@@ -114,12 +110,12 @@ public class PlayScreen extends BaseScreen{
                         );
                     }
 
-                    case MOVE -> new TimeGlider(
+                    case MOVE -> new DurationGlider(
                         new CoordGlider(currentEvent.prevPos, currentEvent.newPos),
                         0.075f
                     );
 
-                    case PROJECTILE -> new TimeGlider(
+                    case PROJECTILE -> new DurationGlider(
                         new CoordGlider(currentEvent.prevPos, currentEvent.newPos),
                         currentEvent.prevPos.distance(currentEvent.newPos) * 0.05f
                     );
@@ -154,8 +150,6 @@ public class PlayScreen extends BaseScreen{
                 game.drawText(e.pos().x, e.pos().y, e.glyph(), e.color());
             }
         }
-
-        game.batch.end();
     }
 
     @Override
@@ -266,6 +260,6 @@ public class PlayScreen extends BaseScreen{
                 return new SkillSelectScreen(this, player);
             }*/
         }
-        return this;
+        return null;
     }
 }

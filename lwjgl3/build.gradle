@@ -117,7 +117,7 @@ tasks.register("jarWin") {
   }
 }
 
-construo {
+construo { // NOTE: this doesn't work!!!
     // name of the executable
     name.set(appName)
     // human-readable name, used for example in the `.app` name for macOS
