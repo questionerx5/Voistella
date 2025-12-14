@@ -207,13 +207,9 @@ public class PlayScreen extends BaseScreen{
                 break;
             }
             case 'f': {
-                player.setNextAction(new AttackAction(player));
-                break;
+                return new AttackTargetScreen(this, player);
             }
-            /*case 'f': {
-                return new AttackTargetScreen(this, player.pos().x, player.pos().y, player);
-            }
-            case '>': {
+            /*case '>': {
                 if(feature != null && feature.levelChangeComponent != null && !feature.levelChangeComponent.up){
                     player.setNextAction(new ChangeLevelAction(feature.levelChangeComponent.level, feature.levelChangeComponent.destination));
                 }
