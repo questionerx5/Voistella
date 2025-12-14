@@ -50,7 +50,7 @@ public interface ActionSupplier<T extends Actor>{
             else{
                 // Use visible creatures.
                 for(Creature creature : c.level().creatures()){
-                    if((c.isAlly() != creature.isAlly()) && c.canSee(creature.pos().x, creature.pos().y)){
+                    if((c.isAlly() != creature.isAlly()) && c.canSee(creature.pos())){
                         targets.add(creature.pos());
                     }
                 }
@@ -86,7 +86,7 @@ public interface ActionSupplier<T extends Actor>{
             else{
                 // Use visible creatures.
                 for(Creature creature : c.level().creatures()){
-                    if((c.isAlly() != creature.isAlly()) && c.canSee(creature.pos().x, creature.pos().y)){
+                    if((c.isAlly() != creature.isAlly()) && c.canSee(creature.pos())){
                         targets.add(creature.pos());
                     }
                 }
@@ -181,7 +181,7 @@ public interface ActionSupplier<T extends Actor>{
             for(Creature creature : c.level().creatures()){
                 if(creature.pos.x - c.pos.x >= -5 && creature.pos.x - c.pos.x <= 5 &&
                 creature.pos.y - c.pos.y >= -5 && creature.pos.y - c.pos.y <= 5 &&
-                creature != c && c.canSee(creature.pos.x, creature.pos.y) && pred.test(c, creature)){
+                creature != c && c.canSee(creature.pos()) && pred.test(c, creature)){
                     count++;
                 }
             }

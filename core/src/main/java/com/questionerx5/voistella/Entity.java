@@ -86,8 +86,8 @@ public abstract class Entity extends Actor{
             if(!creature.receivesMessages()){
                 continue;
             }
-            boolean canSeeActor = creature == this || creature.canSee(this.pos.x, this.pos.y);
-            boolean canSeeTarget = creature == target || creature.canSee(target.pos.x, target.pos.y);
+            boolean canSeeActor = creature == this || creature.canSee(this.pos);
+            boolean canSeeTarget = creature == target || creature.canSee(target.pos);
             // Don't message the viewer if they can't see the actor or the target.
             if(!canSeeActor && !canSeeTarget){
                 continue;
@@ -108,7 +108,7 @@ public abstract class Entity extends Actor{
             if(!creature.receivesMessages()){
                 continue;
             }
-            if(creature != this && !creature.canSee(this.pos.x, this.pos.y)){
+            if(creature != this && !creature.canSee(this.pos)){
                 continue;
             }
             //apparently there's no Messaging.transform() without a target and with an extra. squidsquad devs,

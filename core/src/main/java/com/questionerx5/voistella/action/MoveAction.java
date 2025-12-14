@@ -36,8 +36,8 @@ public class MoveAction extends Action{
             for(Creature creature : actorEntity.level().creatures()){
                 if(creature != actorEntity
                 && creature.tracksEntities()
-                && creature.canSee(actorEntity.pos().x, actorEntity.pos().y)
-                && !creature.canSee(targetPos.x, targetPos.y)){
+                && creature.canSee(actorEntity.pos())
+                && !creature.canSee(targetPos)){
                     creature.memAddEntity(actorEntity, targetPos);
                 }
             }

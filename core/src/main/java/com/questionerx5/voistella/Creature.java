@@ -192,6 +192,9 @@ public class Creature extends Entity{
     private float[][] visible;
     // If true, this creature needs to update what's visible.
     private boolean visibleDirty;
+    public boolean canSee(Coord pos){
+        return canSee(pos.x, pos.y);
+    }
     public boolean canSee(int x, int y){
         return DEBUG_ALL_SEEING || Radius.CIRCLE.radius(pos.x, pos.y, x, y) <= visionRadius && getVisible()[x][y] > 0;
     }
@@ -230,7 +233,7 @@ public class Creature extends Entity{
         return memory.tracksEntities();
     }
     public void memAddEntity(Entity other){
-        if(canSee(other.pos.x, other.pos.y)){
+        if(canSee(other.pos)){
             memory.addEntity(other);
         }
     }
@@ -238,7 +241,7 @@ public class Creature extends Entity{
         memory.addEntity(other, pos);
     }
     public void memRemoveEntity(Entity other){
-        if(canSee(other.pos.x, other.pos.y)){
+        if(canSee(other.pos)){
             memory.removeEntity(other.level, other);
         }
     }
@@ -261,9 +264,8 @@ public class Creature extends Entity{
             // Remove entities that aren't where they were remembered to be.
             ObjectSet<Entity> toRemove = new ObjectSet<>();
             for(Map.Entry<Entity, Coord> entity : memEntities().entrySet()){
-                if(canSee(entity.getValue().x, entity.getValue().y) &&
-                    !(entity.getKey().level() == lastNonNullLevel && canSee(entity.getKey().pos().x, entity.getKey().pos().y))
-                ){
+                if(canSee(entity.getValue()) &&
+                   !(entity.getKey().level() == lastNonNullLevel && canSee(entity.getKey().pos()))){
                     toRemove.add(entity.getKey());
                 }
             }
