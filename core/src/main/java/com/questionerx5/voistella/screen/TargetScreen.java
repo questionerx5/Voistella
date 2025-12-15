@@ -2,11 +2,12 @@ package com.questionerx5.voistella.screen;
 
 import java.util.Collection;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.tommyettinger.ds.ObjectDeque;
 import com.github.tommyettinger.ds.ObjectList;
 import com.github.yellowstonegames.grid.Coord;
 import com.github.yellowstonegames.press.SquidInput;
+import com.questionerx5.voistella.Palette;
+import com.github.yellowstonegames.core.DescriptiveColorRgb;
 import com.github.yellowstonegames.grid.BresenhamLine;
 
 public abstract class TargetScreen extends BaseScreen{ // TODO: caption
@@ -18,9 +19,9 @@ public abstract class TargetScreen extends BaseScreen{ // TODO: caption
     protected ObjectList<Coord> tabTargets;
     protected int tabTargetIndex;
 
-    private static final float VALID_COLOR = Color.toFloatBits(1f, 0f, 1f, 0.5f);
-    private static final float INVALID_COLOR = Color.toFloatBits(1f, 0f, 0f, 0.5f);
-    private static final float HIGHLIGHT_COLOR = Color.toFloatBits(1f, 1f, 1f, 0.125f);
+    private static final int VALID_COLOR = DescriptiveColorRgb.setAlpha(Palette.MAGENTA, 0.4f);
+    private static final int INVALID_COLOR = DescriptiveColorRgb.setAlpha(Palette.RED, 0.4f);
+    private static final int HIGHLIGHT_COLOR = DescriptiveColorRgb.setAlpha(Palette.WHITE, 0.125f);
 
     protected static final Collection<Coord> getCircle(Coord origin, double radius){
         Collection<Coord> inside = new ObjectList<>();

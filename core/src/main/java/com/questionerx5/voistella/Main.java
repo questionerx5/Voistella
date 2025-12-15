@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.github.yellowstonegames.core.DescriptiveColorRgb;
 import com.github.yellowstonegames.press.SquidInput;
 import com.questionerx5.voistella.screen.BaseScreen;
 import com.questionerx5.voistella.screen.StartScreen;
@@ -85,27 +86,18 @@ public class Main extends Game{
         font.dispose();
     }
 
-    /** Fills a grid square with a solid color. */
-    public void fillCell(float x, float y, Color color){
-        fillRect(x, y, 1, 1, color);
-    }
     /** Fills a grid square with a solid color.
-     * @param color The color, as a packed float (that could be passed into e.g. {@link com.badlogic.gdx.graphics.g2d.Batch#setPackedColor(float)})
+     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb})
      */
-    public void fillCell(float x, float y, float color){
+    public void fillCell(float x, float y, int color){
         fillRect(x, y, 1, 1, color);
-    }
-    /** Fills a rectangle with a solid color. */
-    public void fillRect(float x, float y, float width, float height, Color color){
-        batch.setColor(color);
-        batch.draw(pixel, x * COLUMN_SCALE, (ROWS - y - height) * ROW_SCALE, width * COLUMN_SCALE, height * ROW_SCALE);
     }
     /**
      * Fills a rectangle with a solid color.
-     * @param color The color, as a packed float (that could be passed into e.g. {@link com.badlogic.gdx.graphics.g2d.Batch#setPackedColor(float)})
+     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb})
      */
-    public void fillRect(float x, float y, float width, float height, float color){
-        batch.setPackedColor(color);
+    public void fillRect(float x, float y, float width, float height, int color){
+        batch.setPackedColor(DescriptiveColorRgb.toFloat(color));
         batch.draw(pixel, x * COLUMN_SCALE, (ROWS - y - height) * ROW_SCALE, width * COLUMN_SCALE, height * ROW_SCALE);
     }
 
@@ -118,30 +110,25 @@ public class Main extends Game{
 
     /** Draws the given character at the given grid coordinates, in white. */
     public void drawText(float x, float y, char glyph){
-        drawText(x, y, glyph, Color.WHITE);
+        drawText(x, y, glyph, Palette.WHITE);
     }
     /** Draws the given character at the given grid coordinates.
-     * @param color The color, as a packed float (that could be passed into e.g. {@link com.badlogic.gdx.graphics.g2d.Batch#setPackedColor(float)})
+     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb})
      */
-    public void drawText(float x, float y, char glyph, float color){
-        Color.abgr8888ToColor(font.getColor(), color);
-        drawChar(x, y, glyph);
-    }
-    /** Draws the given character at the given grid coordinates. */
-    public void drawText(float x, float y, char glyph, Color color){
-        font.setColor(color);
+    public void drawText(float x, float y, char glyph, int color){
+        Color.abgr8888ToColor(font.getColor(), DescriptiveColorRgb.toFloat(color));
         drawChar(x, y, glyph);
     }
     
     /** Draws the given String starting at the given grid coordinates, in white. */
     public void drawText(float x, float y, String string){
-        drawText(x, y, string, Color.WHITE);
+        drawText(x, y, string, Palette.WHITE);
     }
     /** Draws the given String starting at the given grid coordinates. */
     //TODO: Allow color formatting
-    public void drawText(float x, float y, String string, Color color){
+    public void drawText(float x, float y, String string, int color){
         int lineNum = 0;
-        font.setColor(color);
+        Color.abgr8888ToColor(font.getColor(), DescriptiveColorRgb.toFloat(color));
         for(String line : string.split("\\n")){
             for(int i = 0; i < line.length(); i++){
                 drawChar(x + i, y + lineNum, line.charAt(i));

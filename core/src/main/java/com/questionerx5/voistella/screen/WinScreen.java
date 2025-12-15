@@ -1,8 +1,8 @@
 package com.questionerx5.voistella.screen;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.yellowstonegames.press.SquidInput;
 import com.questionerx5.voistella.Main;
+import com.questionerx5.voistella.Palette;
 
 public class WinScreen extends BaseScreen{
     public WinScreen(final Main game){
@@ -11,8 +11,8 @@ public class WinScreen extends BaseScreen{
 
     @Override
     public void render(float delta){
-        game.fillRect(0, 0, Main.COLUMNS, Main.ROWS, Color.DARK_GRAY);
-        game.drawText(1, 1, "You won!", Color.GREEN);
+        game.fillRect(0, 0, Main.COLUMNS, Main.ROWS, Palette.DARK_GREY);
+        game.drawText(1, 1, "You won!", Palette.LIME);
         game.drawText(1, 2, "Press Enter to restart.");
     }
 

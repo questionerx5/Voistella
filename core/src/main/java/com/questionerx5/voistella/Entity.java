@@ -1,6 +1,5 @@
 package com.questionerx5.voistella;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.yellowstonegames.grid.Coord;
 import com.github.yellowstonegames.text.Messaging;
 import com.github.yellowstonegames.text.Pronoun;
@@ -29,8 +28,9 @@ public abstract class Entity extends Actor{
         return glyph;
     }
 
-    protected Color color;
-    public Color color(){
+    // Color, as an int from DescriptiveColorRgb.
+    protected int color;
+    public int color(){
         return color;
     }
 

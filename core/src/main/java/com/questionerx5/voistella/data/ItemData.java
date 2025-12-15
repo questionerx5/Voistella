@@ -1,6 +1,5 @@
 package com.questionerx5.voistella.data;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.Item;
 import com.questionerx5.voistella.Level;
@@ -18,13 +17,13 @@ public class ItemData extends EntityData<Item>{
         return this;
     }
 
-    public ItemData(char glyph, Color color, String name, boolean unique){
+    public ItemData(char glyph, int color, String name, boolean unique){
         this.glyph = glyph;
         this.color = color;
         this.name = name;
         this.unique = unique;
     }
-    public ItemData(char glyph, Color color, String name){
+    public ItemData(char glyph, int color, String name){
         this(glyph, color, name, Character.isUpperCase(name.charAt(0)));
     }
     public ItemData(ItemData other){

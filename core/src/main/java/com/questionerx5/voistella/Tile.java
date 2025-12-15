@@ -1,30 +1,29 @@
 package com.questionerx5.voistella;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.tommyettinger.ds.EnumSet;
 import com.github.yellowstonegames.grid.Region;
 
 public enum Tile{
     // Normal tiles.
-    FLOOR('.', Color.GRAY, new Color(0.125f, 0.125f, 0.125f, 1f), TileFlag.UNREPLACEABLE),
-    WALL('#', Color.GRAY, Color.DARK_GRAY, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS, TileFlag.BECOMES_ENTRANCE),
+    FLOOR('.', Palette.GREY, Palette.DARKER_GREY, TileFlag.UNREPLACEABLE),
+    WALL('#', Palette.GREY, Palette.DARK_GREY, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS, TileFlag.BECOMES_ENTRANCE),
     
     // Tiles used for level generation.
-    BLANK(' ', Color.BLACK, Color.DARK_GRAY, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS, TileFlag.BLANK),
+    BLANK(' ', Palette.BLACK, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS, TileFlag.BLANK),
 
     // Out of bounds.
-    BOUNDS('X', Color.RED, TileFlag.BLOCKING);
+    BOUNDS('X', Palette.RED, TileFlag.BLOCKING, TileFlag.BLOCKS_LOS);
     
     private char glyph;
     public char glyph(){
         return glyph;
     }
 
-    private float fg, bg;
-    public float fg(){
+    private int fg, bg;
+    public int fg(){
         return fg;
     }
-    public float bg(){
+    public int bg(){
         return bg;
     }
     
@@ -50,16 +49,10 @@ public enum Tile{
         }
     }
     
-    Tile(char glyph, float fg, TileFlag... flags){
-        this(glyph, fg, Color.BLACK.toFloatBits(), flags);
+    Tile(char glyph, int fg, TileFlag... flags){
+        this(glyph, fg, Palette.BLACK, flags);
     }
-    Tile(char glyph, Color fg, TileFlag... flags){
-        this(glyph, fg.toFloatBits(), Color.BLACK.toFloatBits(), flags);
-    }
-    Tile(char glyph, Color fg, Color bg, TileFlag... flags){
-        this(glyph, fg.toFloatBits(), bg.toFloatBits(), flags);
-    }
-    Tile(char glyph, float fg, float bg, TileFlag... flags){
+    Tile(char glyph, int fg, int bg, TileFlag... flags){
         this.glyph = glyph;
         this.fg = fg;
         this.bg = bg;

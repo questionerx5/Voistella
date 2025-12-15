@@ -4,13 +4,13 @@ package com.questionerx5.voistella;
 import java.util.Arrays;
 import java.util.Map;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.tommyettinger.ds.EnumMap;
 import com.github.tommyettinger.ds.ObjectDeque;
 import com.github.tommyettinger.ds.ObjectList;
 import com.github.tommyettinger.ds.ObjectObjectMap;
 import com.github.tommyettinger.ds.ObjectSet;
 import com.github.yellowstonegames.grid.Coord;
+import com.github.yellowstonegames.grid.CoordSet;
 import com.github.yellowstonegames.grid.FOV;
 import com.github.yellowstonegames.grid.Measurement;
 import com.github.yellowstonegames.grid.Radius;
@@ -19,7 +19,6 @@ import com.github.yellowstonegames.path.DijkstraMap;
 import com.questionerx5.voistella.DisplayEvent.EventType;
 import com.questionerx5.voistella.Tile.TileFlag;
 import com.questionerx5.voistella.action.Action;
-import com.github.yellowstonegames.grid.CoordSet;
 
 public class Creature extends Entity{
     private static final boolean DEBUG_ALL_SEEING = false;
@@ -397,7 +396,7 @@ public class Creature extends Entity{
         addLinkedActor(skill);
     }
 
-    public Creature(Level level, Coord pos, char glyph, Color color, String name, int maxHealth, int attack, double speed, Memory memory){
+    public Creature(Level level, Coord pos, char glyph, int color, String name, int maxHealth, int attack, double speed, Memory memory){
         this.glyph = glyph;
         this.color = color;
         this.name = name;

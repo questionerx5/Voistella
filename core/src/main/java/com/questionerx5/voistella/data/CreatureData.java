@@ -1,6 +1,5 @@
 package com.questionerx5.voistella.data;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.tommyettinger.ds.ObjectList;
 import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.ActionSupplier;
@@ -42,7 +41,7 @@ public class CreatureData extends EntityData<Creature>{
         return this;
     }
 
-    public CreatureData(char glyph, Color color, String name, boolean unique, ActionSupplier<? super Creature> ai, boolean rememberEntities, int maxHp, int attack, double speed){
+    public CreatureData(char glyph, int color, String name, boolean unique, ActionSupplier<? super Creature> ai, boolean rememberEntities, int maxHp, int attack, double speed){
         this.glyph = glyph;
         this.color = color;
         this.name = name;
@@ -55,7 +54,7 @@ public class CreatureData extends EntityData<Creature>{
         this.isAlly = false;
         this.skills = new ObjectList<>();
     }
-    public CreatureData(char glyph, Color color, String name, ActionSupplier<? super Creature> ai, boolean rememberEntities, int maxHp, int attack, double speed){
+    public CreatureData(char glyph, int color, String name, ActionSupplier<? super Creature> ai, boolean rememberEntities, int maxHp, int attack, double speed){
         this(glyph, color, name, Character.isUpperCase(name.charAt(0)), ai, rememberEntities, maxHp, attack, speed);
     }
     public CreatureData(CreatureData other){

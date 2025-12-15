@@ -1,6 +1,5 @@
 package com.questionerx5.voistella;
 
-import com.badlogic.gdx.graphics.Color; // TODO: Determine class for colors, this doesn't have any green (Color.GREEN is lime)
 import com.github.tommyettinger.ds.ObjectObjectMap;
 import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.component.feature.*;
@@ -24,7 +23,7 @@ public class ActorFactory{
         if(creatures == null){
             creatures = new ObjectObjectMap<>();
             creatures.put("player",
-                new CreatureData('@', Color.WHITE, "cursed monstrosity",
+                new CreatureData('@', Palette.WHITE, "cursed monstrosity",
                 ActionSupplier.WANDER, false,
                 20, 2, 100).setAlly(true)
                 .addSkill(new SkillData("heal", 7, 0, 0,
@@ -38,37 +37,37 @@ public class ActorFactory{
                 ))
             );
             creatures.put("test:fungus",
-                new CreatureData('f', Color.GREEN, "fungus",
+                new CreatureData('f', Palette.GREEN, "fungus",
                 ActionSupplier.NOTHING, false,
                 5, 0, -1)
             );
             creatures.put("test:bat",
-                new CreatureData('b', Color.BROWN, "bat",
+                new CreatureData('b', Palette.BROWN, "bat",
                 ActionSupplier.WANDER, false,
                 2, 1, 200)
             );
             creatures.put("test:zombie",
-                new CreatureData('Z', Color.LIGHT_GRAY, "zombie",
+                new CreatureData('Z', Palette.LIGHT_GREY, "zombie",
                 ActionSupplier.CHASE(ActionSupplier.NOTHING), true,
                 6, 3, 50)
             );
             creatures.put("test:goblin",
-                new CreatureData('g', Color.GREEN, "goblin",
+                new CreatureData('g', Palette.GREEN, "goblin",
                 ActionSupplier.RANGED_ATTACK(ActionSupplier.WANDER), false,
                 4, 2, 100)
             );
             creatures.put("test:rogue",
-                new CreatureData('@', Color.BLUE, "rogue",
+                new CreatureData('@', Palette.BLUE, "rogue",
                 ActionSupplier.CHASE(ActionSupplier.WANDER), true,
                 1, 1, 200)
             );
             creatures.put("test:stealer",
-                new CreatureData('@', Color.BROWN, "stealer",
+                new CreatureData('@', Palette.BROWN, "stealer",
                 ActionSupplier.EQUIP(ActionSupplier.PICKUP(ActionSupplier.CHASE(ActionSupplier.WANDER))), true,
                 10, 0, 100)
             );
             creatures.put("test:scaredy_cat",
-                new CreatureData('c', Color.ORANGE, "scaredy cat",
+                new CreatureData('c', Palette.ORANGE, "scaredy cat",
                 ActionSupplier.HP_CHECK(1,
                     ActionSupplier.FLEE(ActionSupplier.NOTHING),
                     ActionSupplier.CHASE(ActionSupplier.WANDER)),
@@ -76,7 +75,7 @@ public class ActorFactory{
                 3, 2, 200)
             );
             creatures.put("test:helper",
-                new CreatureData('@', Color.SKY, "helper",
+                new CreatureData('@', Palette.SKY, "helper",
                 ActionSupplier.HP_CHECK(0.3,
                     ActionSupplier.FLEE(ActionSupplier.RANGED_ATTACK(ActionSupplier.NOTHING)),
                     ActionSupplier.CHASE(ActionSupplier.WANDER)),
@@ -95,52 +94,52 @@ public class ActorFactory{
         if(items == null){
             items = new ObjectObjectMap<>();
             items.put("junk",
-                new ItemData(',', Color.BROWN, "junk")
+                new ItemData(',', Palette.BROWN, "junk")
             );
             items.put("sword",
-                new ItemData(')', Color.WHITE, "sword")
+                new ItemData(')', Palette.WHITE, "sword")
                 .setEquippableComponent(new EquippableComponent(new Attack(6), EquipSlot.WEAPON))
             );
             items.put("bow",
-                new ItemData(')', Color.BROWN, "bow")
+                new ItemData(')', Palette.BROWN, "bow")
                 .setEquippableComponent(new EquippableComponent(new Attack(2, 4.5), EquipSlot.WEAPON))
             );
             items.put("health potion",
-                new ItemData('!', Color.RED, "health potion")
+                new ItemData('!', Palette.RED, "health potion")
                 .setPotionComponent(new PotionComponent(new Effect(ActionSupplier.HEAL(10))))
             );
             items.put("regen potion",
-                new ItemData('!', Color.PINK, "regen potion")
+                new ItemData('!', Palette.MAGENTA, "regen potion")
                 .setPotionComponent(new PotionComponent(new Effect(20, ActionSupplier.HEAL(1))))
             );
             items.put("delayed health potion",
-                new ItemData('!', Color.SALMON, "delayed health potion")
+                new ItemData('!', Palette.SALMON, "delayed health potion")
                 .setPotionComponent(new PotionComponent(new Effect(10, null, ActionSupplier.HEAL(20))))
             );
         }
     }
 
     public static Feature gameEnder(Level level, Coord pos){
-        Feature feature = new Feature(level, pos, 'O', Color.LIME, "victory podium");
+        Feature feature = new Feature(level, pos, 'O', Palette.LIME, "victory podium");
         level.addFeature(feature);
         feature.winComponent = new WinComponent();
         return feature;
     }
     public static Feature stairsDown(Level level, Coord pos, Level destinationLevel, Coord destinationCoord){
-        Feature feature = new Feature(level, pos, '>', Color.WHITE, "stairs leading down");
+        Feature feature = new Feature(level, pos, '>', Palette.WHITE, "stairs leading down");
         level.addFeature(feature);
         feature.levelChangeComponent = new LevelChangeComponent(destinationCoord, destinationLevel, false);
         return feature;
     }
     public static Feature stairsUp(Level level, Coord pos, Level destinationLevel, Coord destinationCoord){
-        Feature feature = new Feature(level, pos, '<', Color.WHITE, "stairs leading up");
+        Feature feature = new Feature(level, pos, '<', Palette.WHITE, "stairs leading up");
         level.addFeature(feature);
         feature.levelChangeComponent = new LevelChangeComponent(destinationCoord, destinationLevel, true);
         return feature;
     }
 
     public static Item junk(Level level, Coord pos){
-        ItemData item = new ItemData(',', Color.BROWN, "junk");
+        ItemData item = new ItemData(',', Palette.BROWN, "junk");
         return item.create(level, pos);
     }
 }

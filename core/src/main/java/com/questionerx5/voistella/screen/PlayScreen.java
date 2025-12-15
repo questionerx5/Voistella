@@ -1,6 +1,5 @@
 package com.questionerx5.voistella.screen;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.tommyettinger.digital.MathTools;
 import com.github.tommyettinger.ds.ObjectList;
 import com.github.yellowstonegames.press.SquidInput;
@@ -10,9 +9,9 @@ import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.DisplayEvent;
 import com.questionerx5.voistella.Entity;
 import com.questionerx5.voistella.Feature;
-import com.questionerx5.voistella.Item;
 import com.questionerx5.voistella.Level;
 import com.questionerx5.voistella.Main;
+import com.questionerx5.voistella.Palette;
 import com.questionerx5.voistella.RNGVars;
 import com.questionerx5.voistella.World;
 import com.questionerx5.voistella.action.*;
@@ -139,7 +138,7 @@ public class PlayScreen extends BaseScreen{
                     game.drawText(glider.getFloat("x"), glider.getFloat("y"), eventEntity.glyph(), eventEntity.color());
                 }
                 case PROJECTILE -> {
-                    game.drawText(glider.getFloat("x"), glider.getFloat("y"), '·', Color.WHITE);
+                    game.drawText(glider.getFloat("x"), glider.getFloat("y"), '·', Palette.WHITE);
                 }
                 case HIT, DIE, PICKED_UP, LEAVE_LEVEL, ENTER_LEVEL, DROPPED -> {} // no animation needed
             }

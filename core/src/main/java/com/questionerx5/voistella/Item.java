@@ -1,6 +1,5 @@
 package com.questionerx5.voistella;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.action.Action;
 import com.questionerx5.voistella.action.WaitAction;
@@ -10,7 +9,7 @@ public class Item extends Entity{
     public EquippableComponent equippableComponent;
     public PotionComponent potionComponent;
 
-    public Item(Level level, Coord pos, char glyph, Color color, String name){
+    public Item(Level level, Coord pos, char glyph, int color, String name){
         setLevel(level, pos);
         this.glyph = glyph;
         this.color = color;

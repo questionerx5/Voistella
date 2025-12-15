@@ -1,6 +1,5 @@
 package com.questionerx5.voistella;
 
-import com.badlogic.gdx.graphics.Color;
 import com.github.yellowstonegames.grid.Coord;
 import com.questionerx5.voistella.action.Action;
 import com.questionerx5.voistella.action.WaitAction;
@@ -30,7 +29,7 @@ public class Feature extends Entity{
         return this;
     }*/
 
-    public Feature(Level level, Coord pos, char glyph, Color color, String name){
+    public Feature(Level level, Coord pos, char glyph, int color, String name){
         setLevel(level, pos);
         this.glyph = glyph;
         this.color = color;
