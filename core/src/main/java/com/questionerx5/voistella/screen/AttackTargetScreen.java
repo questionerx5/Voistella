@@ -10,7 +10,7 @@ public class AttackTargetScreen extends TargetScreen{
     private Creature player;
     private boolean lineBlocked;
 
-    protected AttackTargetScreen(BaseScreen superScreen, Creature player){
+    protected AttackTargetScreen(BaseScreen superScreen, Creature player, int offX, int offY){
         this.player = player;
         ObjectList<Coord> targetableCreatures = new ObjectList<>();
         for(Creature c : player.level().creatures()){
@@ -20,7 +20,7 @@ public class AttackTargetScreen extends TargetScreen{
                 targetableCreatures.add(c.pos());
             }
         }
-        super(superScreen, player.pos(), targetableCreatures.isEmpty() ? player.pos() : targetableCreatures.get(0));
+        super(superScreen, player.pos(), targetableCreatures.isEmpty() ? player.pos() : targetableCreatures.get(0), offX, offY);
         tabTargets = targetableCreatures;
         highlightArea = getCircle(player.pos(), player.attack().range);
     }

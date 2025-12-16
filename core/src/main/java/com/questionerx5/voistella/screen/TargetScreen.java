@@ -13,6 +13,7 @@ import com.github.yellowstonegames.grid.BresenhamLine;
 public abstract class TargetScreen extends BaseScreen{ // TODO: caption
     protected BaseScreen superScreen;
     private Coord origin, target;
+    private int offX, offY;
     protected Collection<Coord> highlightArea;
     private boolean lastValid;
     protected ObjectDeque<Coord> line;
@@ -46,14 +47,16 @@ public abstract class TargetScreen extends BaseScreen{ // TODO: caption
         return inside;
     }
 
-    protected TargetScreen(BaseScreen superScreen, Coord origin){
-        this(superScreen, origin, origin);
+    protected TargetScreen(BaseScreen superScreen, Coord origin, int offX, int offY){
+        this(superScreen, origin, origin, offX, offY);
     }
-    protected TargetScreen(BaseScreen superScreen, Coord origin, Coord target){
+    protected TargetScreen(BaseScreen superScreen, Coord origin, Coord target, int offX, int offY){
         super(superScreen.game);
         this.superScreen = superScreen;
         this.origin = origin;
         this.target = target;
+        this.offX = offX;
+        this.offY = offY;
         line = new ObjectDeque<>();
         tabTargetIndex = 0; // assume target is set to tabTargets.get(0)
         targetMoved();
@@ -69,16 +72,16 @@ public abstract class TargetScreen extends BaseScreen{ // TODO: caption
         if(highlightArea != null){
             for(Coord point : highlightArea){
                 if(point.x != target.x || point.y != target.y){
-                    game.fillCell(point.x, point.y, HIGHLIGHT_COLOR);
+                    game.fillCell(point.x + offX, point.y + offY, HIGHLIGHT_COLOR);
                 }
             }
         }
         for(Coord point : line){
             if(point.x != target.x || point.y != target.y){
-                game.fillCell(point.x, point.y, HIGHLIGHT_COLOR);
+                game.fillCell(point.x + offX, point.y + offY, HIGHLIGHT_COLOR);
             }
         }
-        game.fillCell(target.x, target.y, lastValid ? VALID_COLOR : INVALID_COLOR);
+        game.fillCell(target.x + offX, target.y + offY, lastValid ? VALID_COLOR : INVALID_COLOR);
     }
 
     @Override

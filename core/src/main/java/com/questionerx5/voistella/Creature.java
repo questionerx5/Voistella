@@ -11,7 +11,7 @@ import com.github.tommyettinger.ds.ObjectObjectMap;
 import com.github.tommyettinger.ds.ObjectSet;
 import com.github.yellowstonegames.grid.Coord;
 import com.github.yellowstonegames.grid.CoordSet;
-import com.github.yellowstonegames.grid.FOV;
+import com.github.yellowstonegames.grid.FOV; // TODO implement symmetric shadowcasting instead (https://www.albertford.com/shadowcasting)
 import com.github.yellowstonegames.grid.Measurement;
 import com.github.yellowstonegames.grid.Radius;
 import com.github.yellowstonegames.grid.Region;
@@ -195,7 +195,10 @@ public class Creature extends Entity{
         return canSee(pos.x, pos.y);
     }
     public boolean canSee(int x, int y){
-        return DEBUG_ALL_SEEING || Radius.CIRCLE.radius(pos.x, pos.y, x, y) <= visionRadius && getVisible()[x][y] > 0;
+        if(omnipotent()){
+            return true;
+        }
+        return Radius.CIRCLE.radius(pos.x, pos.y, x, y) <= visionRadius && getVisible()[x][y] > 0;
     }
     public float[][] getVisible(){
         if(visibleDirty){
@@ -203,7 +206,7 @@ public class Creature extends Entity{
             if(visible == null || visible.length != lastNonNullLevel.width() || visible[0].length != lastNonNullLevel.height()){
                 visible = new float[lastNonNullLevel.width()][lastNonNullLevel.height()];
             }
-            if(DEBUG_ALL_SEEING){
+            if(omnipotent()){
                 for(int i = 0; i < visible.length; i++){
                     Arrays.fill(visible[i], 1);
                 }
@@ -215,6 +218,10 @@ public class Creature extends Entity{
             updateRemembered();
         }
         return visible;
+    }
+    @SuppressWarnings("unused")
+    private boolean omnipotent(){
+        return DEBUG_ALL_SEEING && memory instanceof PlayerMemory;
     }
 
     public void setVisibleDirty(){

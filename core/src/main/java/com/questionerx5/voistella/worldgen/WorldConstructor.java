@@ -40,7 +40,7 @@ public class WorldConstructor{
             .addLoops()
             .placeEntities(ActorFactory.creature("test:fungus"), 50)
             .placeEntities(ActorFactory.creatureCopy("test:helper").setAlly(true), 1)
-            .placeEntities(ActorFactory.creature("test:scaredy cat"), 3)
+            .placeEntities(ActorFactory.creature("test:scaredy_cat"), 3)
             .randomStairs(),
 
             new LevelBuilder(30, 30)
@@ -82,7 +82,7 @@ public class WorldConstructor{
             .placeEntitiesNonBlocking(ActorFactory.item("junk"), 50)
             .placeEntities(ActorFactory.creature("test:bat"), 20)
             .placeEntities(ActorFactory.creature("test:rogue"), 5)
-            .placeEntities(ActorFactory.creature("test:stealer"), 25) //TODO: Determine source of lag with large numbers of entities
+            .placeEntities(ActorFactory.creature("test:stealer"), 25)
             .placeEntities(ActorFactory.creatureCopy("test:goblin").setEquipment(ActorFactory.item("bow")), 5)
             .randomStairs()
         );
@@ -90,7 +90,7 @@ public class WorldConstructor{
 
     public static World generateBasic(CreatureData player){
         return linkLevelBuilders(
-            new LevelBuilder(79, 23)
+            new LevelBuilder(40, 40)
             .addStartRoom(new FixedRoomSupplier("""
                 #############
                 #...........#
@@ -107,6 +107,7 @@ public class WorldConstructor{
             .addLoops()
             .placePlayer(player)
             .placeEntities(ActorFactory.creature("test:fungus"), 5)
+            .placeEntities(ActorFactory.creature("test:rogue"), 1)
         );
     }
 

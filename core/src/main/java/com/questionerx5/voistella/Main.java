@@ -17,13 +17,13 @@ import com.questionerx5.voistella.screen.StartScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game{
-    public static final int ROWS = 24;
+    public static final int ROWS = 30;
     public static final int COLUMNS = 80;
-    public static final float ROW_SCALE = 2f;
+    public static final float ROW_SCALE = 1.8f;
     public static final float COLUMN_SCALE = 1f;
 
     private static final int FONT_QUALITY = 72;
-    private static final int FONT_SIZE = 50;
+    private static final int FONT_SIZE = 40;
 
     public SpriteBatch batch;
     public FitViewport viewport;
@@ -87,14 +87,14 @@ public class Main extends Game{
     }
 
     /** Fills a grid square with a solid color.
-     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb})
+     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb}
      */
     public void fillCell(float x, float y, int color){
         fillRect(x, y, 1, 1, color);
     }
     /**
      * Fills a rectangle with a solid color.
-     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb})
+     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb}
      */
     public void fillRect(float x, float y, float width, float height, int color){
         batch.setPackedColor(DescriptiveColorRgb.toFloat(color));
@@ -113,7 +113,7 @@ public class Main extends Game{
         drawText(x, y, glyph, Palette.WHITE);
     }
     /** Draws the given character at the given grid coordinates.
-     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb})
+     * @param color The color, as an int from {@link com.github.yellowstonegames.core.DescriptiveColorRgb}
      */
     public void drawText(float x, float y, char glyph, int color){
         Color.abgr8888ToColor(font.getColor(), DescriptiveColorRgb.toFloat(color));
