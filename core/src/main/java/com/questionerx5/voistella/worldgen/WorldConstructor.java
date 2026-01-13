@@ -88,29 +88,6 @@ public class WorldConstructor{
         );
     }
 
-    public static World generateBasic(CreatureData player){
-        return linkLevelBuilders(
-            new LevelBuilder(40, 40)
-            .addStartRoom(new FixedRoomSupplier("""
-                #############
-                #...........#
-                #...........#
-                #..#.#.###..#
-                #..#.#..#...#
-                #..###..#...#
-                #..#.#..#...#
-                #..#.#.###..#
-                #...........#
-                #...........#
-                #############"""))
-            .addRooms(100, new BoxRoomSupplier(2, 2, 4, 4), new BoxRoomSupplier(6, 6, 8, 8), new BoxRoomSupplier(6, 6, 8, 8))
-            .addLoops()
-            .placePlayer(player)
-            .placeEntities(ActorFactory.creature("test:fungus"), 5)
-            .placeEntities(ActorFactory.creature("test:rogue"), 1)
-        );
-    }
-
     private static Creature player;
     /** @return the player entity from the last call to linkLevelBuilders() */
     public static Creature player(){

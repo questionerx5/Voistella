@@ -77,8 +77,8 @@ public class ActorFactory{
             creatures.put("test:helper",
                 new CreatureData('@', Palette.SKY, "helper",
                 ActionSupplier.HP_CHECK(0.3,
-                    ActionSupplier.FLEE(ActionSupplier.RANGED_ATTACK(ActionSupplier.NOTHING)),
-                    ActionSupplier.CHASE(ActionSupplier.WANDER)),
+                    ActionSupplier.RANGED_ATTACK(ActionSupplier.CHASE(ActionSupplier.WANDER)),
+                    ActionSupplier.FLEE(ActionSupplier.RANGED_ATTACK(ActionSupplier.NOTHING))),
                 true,
                 20, 2, 100)
             );

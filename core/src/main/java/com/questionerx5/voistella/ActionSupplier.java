@@ -1,4 +1,3 @@
-//TODO: New library is untested
 package com.questionerx5.voistella;
 
 import com.github.tommyettinger.ds.ObjectDeque;
@@ -92,7 +91,6 @@ public interface ActionSupplier<T extends Actor>{
                 }
             }
             ObjectDeque<Coord> path = c.pathAway(targets);
-            //System.out.println("Path:" + path);
             if(path == null || path.isEmpty()){
                 return defaultAction.getAction(c);
             }

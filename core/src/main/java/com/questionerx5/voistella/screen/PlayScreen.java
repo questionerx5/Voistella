@@ -29,7 +29,6 @@ public class PlayScreen extends BaseScreen{
     private static final int BAR_LENGTH = 12;
 
     private World world;
-    private Level level;
     private Creature player;
     private ObjectList<String> messages;
 
@@ -70,15 +69,19 @@ public class PlayScreen extends BaseScreen{
         super(game);
         RNGVars.init();
         messages = new ObjectList<>();
-        world = WorldConstructor.generateBasic(ActorFactory.creature("player").makePlayer(messages));
+        world = WorldConstructor.generate(ActorFactory.creature("player").makePlayer(messages));
         player = WorldConstructor.player();
         events = new ObjectList<>();
         world.setEvents(events);
-        level = world.level(0);
+        Level finalLevel = world.level(3);
+        ActorFactory.gameEnder(finalLevel, finalLevel.openPoint());
     }
 
     @Override
-    public void render(float delta){
+    public void render(float delta){        
+        processWorld();
+
+        final Level level = player.lastNonNullLevel();
         final float left = (currentEvent != null && currentEvent.entity == player ? glider.getFloat("x") : player.pos().x) - Main.COLUMNS / 2;
         final float top = (currentEvent != null && currentEvent.entity == player ? glider.getFloat("y") : player.pos().y) + (-Main.ROWS + MESSAGE_LINES + LOWER_UI_LINES) / 2;
         for(int y = Math.max((int) Math.floor(top), 0); y < Math.min(top + Main.ROWS - MESSAGE_LINES - LOWER_UI_LINES, level.height()); y++){
@@ -98,8 +101,6 @@ public class PlayScreen extends BaseScreen{
                 }
             }
         }
-        
-        setupGlider();
 
         // Entity that the current event is moving, and should therefore not be drawn normally
         Entity eventEntity = null;
@@ -140,7 +141,6 @@ public class PlayScreen extends BaseScreen{
             }
         }
 
-
         game.fillRect(0, 0, Main.COLUMNS, MESSAGE_LINES, Palette.DARK_GREY);
         while(messages.size() > MESSAGE_LINES){
             messages.remove(0);
@@ -172,7 +172,7 @@ public class PlayScreen extends BaseScreen{
         game.drawText((BAR_LENGTH - stats.length()) / 2f + BAR_LENGTH * 2 + 3, Main.ROWS - 2, stats);
     }
 
-    private void setupGlider(){
+    private void processWorld(){
         boolean requirePlayerInput = false;
         // An iteration is "boring" if the player is dead and no animation (including off-screen ones) played.
         int boringProcesses = 0;
@@ -259,7 +259,7 @@ public class PlayScreen extends BaseScreen{
             return this;
         }
         Feature feature = player.level().featureAt(player.pos());
-        if(feature != null && feature.winComponent != null){
+        if(feature != null && feature.winComponent != null){ // TODO don't continue turns after winning
             switch(key){
                 case SquidInput.ENTER: return new WinScreen(game);
             }
@@ -309,7 +309,7 @@ public class PlayScreen extends BaseScreen{
                 final int top = player.pos().y + (-Main.ROWS + MESSAGE_LINES + LOWER_UI_LINES) / 2;
                 return new AttackTargetScreen(this, player, -left, -top + MESSAGE_LINES);
             }
-            /*case '>': {
+            case '>': {
                 if(feature != null && feature.levelChangeComponent != null && !feature.levelChangeComponent.up){
                     player.setNextAction(new ChangeLevelAction(feature.levelChangeComponent.level, feature.levelChangeComponent.destination));
                 }
@@ -327,7 +327,7 @@ public class PlayScreen extends BaseScreen{
                 }
                 break;
             }
-            case 'i': {
+            /*case 'i': {
                 return new ItemSelectScreen(this, player.inventory().items(), player, "Inventory");
             }
             case 'e': {

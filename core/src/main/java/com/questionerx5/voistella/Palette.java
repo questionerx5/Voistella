@@ -7,7 +7,7 @@ public class Palette{
 
     public static final int
     BLACK = DescriptiveColorRgb.describe("#000000"),
-    DARKER_GREY = DescriptiveColorRgb.describe("#1f1f1f"),
+    DARKER_GREY = DescriptiveColorRgb.describe("#272727"),
     DARK_GREY = DescriptiveColorRgb.describe("#3f3f3f"),
     GREY = DescriptiveColorRgb.describe("#7f7f7f"),
     LIGHT_GREY = DescriptiveColorRgb.describe("#bfbfbf"),
