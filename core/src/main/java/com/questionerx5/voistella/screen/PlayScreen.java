@@ -13,6 +13,7 @@ import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.DisplayEvent;
 import com.questionerx5.voistella.Entity;
 import com.questionerx5.voistella.Feature;
+import com.questionerx5.voistella.Item;
 import com.questionerx5.voistella.Level;
 import com.questionerx5.voistella.Main;
 import com.questionerx5.voistella.Palette;
@@ -332,24 +333,26 @@ public class PlayScreen extends BaseScreen{
             }
             case 'e': {
                 return new ItemSelectScreen(this, player.equippedItems().values().toArray(new Item[0]), player, "Equipped");
-            }
+            }*/
             case 'g': {
-                List<Item> items = player.level().itemsAt(player.pos());
+                ObjectList<Item> items = player.level().itemsAt(player.pos());
                 if(items.isEmpty()){
                     player.messageError("There's no item there.");
                 }
                 else{
-                    Item[] itemsArray = items.toArray(new Item[0]);
-                    if(itemsArray.length == 1){
-                        player.setNextAction(new PickupAction(itemsArray[0]));
+                    if(items.size() == 1){
+                        player.setNextAction(new PickupAction(items.get(0)));
                     }
                     else{
-                        return new ItemSelectScreen(this, items.toArray(new Item[0]), player, "On ground");
+                        player.setNextAction(new PickupAction(items.get(0)));
+                        //TODO readd
+                        //Item[] itemsArray = items.toArray(new Item[0]);
+                        //return new ItemSelectScreen(this, items.toArray(new Item[0]), player, "On ground");
                     }
                 }
                 break;
             }
-            case 'l': {
+            /*case 'l': {
                 return new LookScreen(this, player.pos().x, player.pos().y, player);
             }
             case 's': {

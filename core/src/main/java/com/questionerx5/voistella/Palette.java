@@ -7,7 +7,7 @@ public class Palette{
 
     public static final int
     BLACK = DescriptiveColorRgb.describe("#000000"),
-    DARKER_GREY = DescriptiveColorRgb.describe("#272727"),
+    DARKER_GREY = DescriptiveColorRgb.describe("#202020"),
     DARK_GREY = DescriptiveColorRgb.describe("#3f3f3f"),
     GREY = DescriptiveColorRgb.describe("#7f7f7f"),
     LIGHT_GREY = DescriptiveColorRgb.describe("#bfbfbf"),
@@ -17,7 +17,7 @@ public class Palette{
     SALMON = DescriptiveColorRgb.describe("#ff7f7f"),
     ORANGE = DescriptiveColorRgb.describe("#ff7f00"),
     YELLOW = DescriptiveColorRgb.describe("#ffff00"),
-    BROWN = DescriptiveColorRgb.describe("#7f3f3f"),
+    BROWN = DescriptiveColorRgb.describe("#825132"),
     LIME = DescriptiveColorRgb.describe("#00ff00"),
     GREEN = DescriptiveColorRgb.describe("#007f00"),
     CYAN = DescriptiveColorRgb.describe("#00ffff"),
