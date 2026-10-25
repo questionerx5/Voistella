@@ -63,6 +63,7 @@ public class PlayScreen extends BaseScreen{
     // Current event being displayed.
     private DisplayEvent currentEvent;
     // Glider for current event.
+    // TODO: Improve related code, and fix bug with player-shot projectiles
     private DurationGlider glider;
     
 
@@ -328,12 +329,12 @@ public class PlayScreen extends BaseScreen{
                 }
                 break;
             }
-            /*case 'i': {
-                return new ItemSelectScreen(this, player.inventory().items(), player, "Inventory");
+            case 'i': {
+                return new ItemSelectScreen(this, player.inventory().items(), player); // "Inventory"
             }
             case 'e': {
-                return new ItemSelectScreen(this, player.equippedItems().values().toArray(new Item[0]), player, "Equipped");
-            }*/
+                return new ItemSelectScreen(this, player.equippedItems().values().toArray(new Item[0]), player); // "Equipped"
+            }
             case 'g': {
                 ObjectList<Item> items = player.level().itemsAt(player.pos());
                 if(items.isEmpty()){

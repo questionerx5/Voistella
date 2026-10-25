@@ -10,9 +10,9 @@ public class RNGVars{
         init(EnhancedRandom.seedFromMath());
     }
     public static void init(long seed){
-        genRNG = new AceRandom(seed);
-        // I don't know how to differentiate these
-        aiRNG = new AceRandom(~seed);
+        EnhancedRandom base = new AceRandom(seed);
+        genRNG = new AceRandom(base.nextLong());
+        aiRNG = new AceRandom(base.nextLong());
     }
     
     private RNGVars(){}
