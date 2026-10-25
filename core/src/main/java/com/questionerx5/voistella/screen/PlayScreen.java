@@ -11,6 +11,7 @@ import com.github.yellowstonegames.smooth.*;
 import com.questionerx5.voistella.ActorFactory;
 import com.questionerx5.voistella.Creature;
 import com.questionerx5.voistella.DisplayEvent;
+import com.questionerx5.voistella.DisplayEvent.EventType;
 import com.questionerx5.voistella.Entity;
 import com.questionerx5.voistella.Feature;
 import com.questionerx5.voistella.Item;
@@ -63,7 +64,6 @@ public class PlayScreen extends BaseScreen{
     // Current event being displayed.
     private DisplayEvent currentEvent;
     // Glider for current event.
-    // TODO: Improve related code, and fix bug with player-shot projectiles
     private DurationGlider glider;
     
 
@@ -83,9 +83,18 @@ public class PlayScreen extends BaseScreen{
     public void render(float delta){        
         processWorld();
 
+        // Entity that the current event is moving, and should therefore not be drawn normally
+        Entity eventEntity = null;
+        if(currentEvent != null){
+            EventType type = currentEvent.type;
+            if(type == EventType.BUMP || type == EventType.MOVE){
+                eventEntity = currentEvent.entity;
+            }
+        }
+
         final Level level = player.lastNonNullLevel();
-        final float left = (currentEvent != null && currentEvent.entity == player ? glider.getFloat("x") : player.pos().x) - Main.COLUMNS / 2;
-        final float top = (currentEvent != null && currentEvent.entity == player ? glider.getFloat("y") : player.pos().y) + (-Main.ROWS + MESSAGE_LINES + LOWER_UI_LINES) / 2;
+        final float left = (currentEvent != null && eventEntity == player ? glider.getFloat("x") : player.pos().x) - Main.COLUMNS / 2;
+        final float top = (currentEvent != null && eventEntity == player ? glider.getFloat("y") : player.pos().y) + (-Main.ROWS + MESSAGE_LINES + LOWER_UI_LINES) / 2;
         for(int y = Math.max((int) Math.floor(top), 0); y < Math.min(top + Main.ROWS - MESSAGE_LINES - LOWER_UI_LINES, level.height()); y++){
             for(int x = Math.max((int) Math.floor(left), 0); x < Math.min(left + Main.COLUMNS, level.width()); x++){
                 final float drawX = x - left;
@@ -104,24 +113,13 @@ public class PlayScreen extends BaseScreen{
             }
         }
 
-        // Entity that the current event is moving, and should therefore not be drawn normally
-        Entity eventEntity = null;
         if(currentEvent != null){
             switch(currentEvent.type){
                 case BUMP, MOVE -> {
-                    eventEntity = currentEvent.entity;
-                    final float drawX = glider.getFloat("x") - left;
-                    final float drawY = glider.getFloat("y") - top + MESSAGE_LINES;
-                    if(inDraw(drawX, drawY)){
-                        game.drawText(drawX, drawY, eventEntity.glyph(), eventEntity.color());
-                    }
+                    drawGlider(left, top, eventEntity.glyph(), eventEntity.color());
                 }
                 case PROJECTILE -> {
-                    final float drawX = glider.getFloat("x") - left;
-                    final float drawY = glider.getFloat("y") - top + MESSAGE_LINES;
-                    if(inDraw(drawX, drawY)){
-                        game.drawText(drawX, drawY, '·', Palette.WHITE);
-                    }
+                    drawGlider(left, top, '·', Palette.WHITE);
                 }
                 case HIT, DIE, PICKED_UP, LEAVE_LEVEL, ENTER_LEVEL, DROPPED -> {} // no animation needed
             }
@@ -172,6 +170,14 @@ public class PlayScreen extends BaseScreen{
         game.fillRect(BAR_LENGTH * 2 + 3, Main.ROWS - 2, BAR_LENGTH, 1, Palette.BLACK);
         game.fillRect(BAR_LENGTH * 2 + 3, Main.ROWS - 2, (float) BAR_LENGTH * player.stamina() / player.maxStamina(), 1, Palette.SALMON);
         game.drawText((BAR_LENGTH - stats.length()) / 2f + BAR_LENGTH * 2 + 3, Main.ROWS - 2, stats);
+    }
+
+    private void drawGlider(float left, float top, char glyph, int color){
+        final float drawX = glider.getFloat("x") - left;
+        final float drawY = glider.getFloat("y") - top + MESSAGE_LINES;
+        if(inDraw(drawX, drawY)){
+            game.drawText(drawX, drawY, glyph, color);
+        }
     }
 
     private void processWorld(){
@@ -306,7 +312,7 @@ public class PlayScreen extends BaseScreen{
                 player.setNextAction(new WaitAction());
                 break;
             }
-            case 'f': {
+            case 'f': { // TODO don't let the player do this while animating!
                 final int left = player.pos().x - Main.COLUMNS / 2; // assume no animation
                 final int top = player.pos().y + (-Main.ROWS + MESSAGE_LINES + LOWER_UI_LINES) / 2;
                 return new AttackTargetScreen(this, player, -left, -top + MESSAGE_LINES);
